@@ -11,14 +11,12 @@ export type ol_radioConfig = {
 };
 
 export const valuesFormConfigMap: FormOptionsStations = {
-  station_network: 1,
   station_captor: [2],
   station_status: [1],
   station_type: [1, 2, 3],
   isCheckedGroup: true,
 };
 export interface FormOptionsStations {
-  station_network: number;
   station_captor: number[];
   station_status: number[];
   station_type: number[];

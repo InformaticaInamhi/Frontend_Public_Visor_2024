@@ -115,17 +115,15 @@ export class EstacionesComponent implements AfterViewInit {
    * Obtiene las estaciones del servicio y las agrega como marcadores en el mapa.
    */
   getStations() {
-    this.stationService.getAllStationsINAMHI().subscribe((data: Station[]) => {
-      setTimeout(() => {
-        this.spinnerService.show(false);
-      }, 0);
-      this.stations = data;
-      this.stationNetwork = this.getOwnersStations(data);
-
-      this.reloadMarkersStation(this.valuesFormConfigMap);
-      // this.showUnclusteredMarkers();
-      // this.showClusteredMarkers();
-    });
+    this.stationService
+      .getAllStationsbyAplication()
+      .subscribe((data: Station[]) => {
+        setTimeout(() => {
+          this.spinnerService.show(false);
+        }, 0);
+        this.stations = data;
+        this.reloadMarkersStation(this.valuesFormConfigMap);
+      });
   }
 
   showClusteredMarkers(): void {
@@ -147,32 +145,6 @@ export class EstacionesComponent implements AfterViewInit {
       this.valuesFormConfigMap
     );
     this.showUnclusteredMarkers();
-    //   this.mapService.createStationMarkers(
-    //     this.dataStations,
-    //     this.valuesFormConfigMap,
-    //     this.mapService.map.getZoom(),
-    //     this.projectId
-    //   );
-    //   this.mapService.toggleMarkerGrouping(
-    //     this.valuesFormConfigMap.isCheckedGroup
-    //   );
-    // }
-  }
-
-  getOwnersStations(stationsInfo: Station[]): OwnerStation[] {
-    let uniqueOwners: Map<number, OwnerStation> = new Map();
-    stationsInfo.forEach((item) => {
-      if (!uniqueOwners.has(item.id_propietario)) {
-        uniqueOwners.set(item.id_propietario, {
-          id_propietario: item.id_propietario,
-          propietario: item.propietario,
-        });
-      }
-    });
-
-    let filterOwners: OwnerStation[] = Array.from(uniqueOwners.values());
-    filterOwners.sort((a, b) => a.id_propietario - b.id_propietario);
-    return filterOwners;
   }
 }
 

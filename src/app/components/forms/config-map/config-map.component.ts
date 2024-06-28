@@ -44,7 +44,6 @@ export class ConfigMapComponent implements OnInit {
 
   ngOnInit(): void {
     this.FormConfigStation = this.fb.group({
-      station_network: 1, // Preselecciona el valor '1'
       station_captor: new FormArray(
         this.station_captor.map((item) => this.fb.control(item.value === 2))
       ),

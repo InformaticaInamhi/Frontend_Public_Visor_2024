@@ -15,10 +15,20 @@ const httpOptions = {
 })
 export class StationService {
   private urlBack = environment.urlBack;
+  private id_aplicacion = environment.id_aplicacion;
   constructor(private http: HttpClient) {}
 
   getAllStationsINAMHI(): Observable<Station[]> {
     const url = this.urlBack + 'station_information/getAllStations/';
+    return this.http.get<Station[]>(url);
+  }
+
+  getAllStationsbyAplication(): Observable<Station[]> {
+    const url =
+      this.urlBack +
+      'station_information/estaciones-aplicacion/' +
+      this.id_aplicacion +
+      '/';
     return this.http.get<Station[]>(url);
   }
 

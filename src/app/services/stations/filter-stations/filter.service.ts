@@ -11,8 +11,8 @@ export class FilterService {
   constructor() {}
 
   filterStations(stationsData: Station[], opciones: FormOptionsStations) {
-    let id_propietario = opciones.station_network;
-    stationsData = this.filterDataById_owner(id_propietario, stationsData);
+    // let id_propietario = opciones.station_network;
+    // stationsData = this.filterDataById_owner(id_propietario, stationsData);
     stationsData = this.filterDataById_captor(
       opciones.station_captor,
       stationsData
