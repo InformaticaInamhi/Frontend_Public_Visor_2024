@@ -13,8 +13,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "baseHref": "/info/",
-            "outputPath": "dist/info",
+            "baseHref": "/datosclima/",
+            "outputPath": "dist/datosclima",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],
