@@ -1,0 +1,12 @@
+<mat-nav-list>
+  @for (item of items_menu; track item.id){
+  <a mat-list-item (click)="changeComponent(item.path)" class="row-icons-menu">
+    <span class="entry">
+      <mat-icon class="icon">{{ item.icon }}</mat-icon>
+      @if (!isCollapsed){
+      <span class="btn-title">{{ item.name }}</span>
+      }
+    </span>
+  </a>
+  }
+</mat-nav-list>

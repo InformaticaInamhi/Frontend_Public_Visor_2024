@@ -1,0 +1,58 @@
+<div class="title">
+  <h1>Centro de Ayuda y Recursos</h1>
+</div>
+<div class="zonaDescarga">
+  <mat-card class="example-card">
+    <mat-card-header class="card-header">
+      <mat-card-title>Manual de usuario Aplicación Web</mat-card-title>
+    </mat-card-header>
+    <img
+      mat-card-image
+      src="./assets/images/home_images/visor.png"
+      alt="Imagen visor"
+    />
+    <mat-card-content class="card-content">
+      <p>
+        Descarga nuestro manual para obtener información detallada sobre cómo
+        utilizar nuestra aplicación web de manera efectiva
+      </p>
+    </mat-card-content>
+    <mat-card-actions class="card-actions">
+      <button
+        mat-stroked-button
+        color="primary"
+        class="download-button"
+        (click)="downloadPdf('visor')"
+      >
+        Descargar
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="example-card">
+    <mat-card-header class="card-header">
+      <mat-card-title>Manual de usuario aplicación Telegram</mat-card-title>
+    </mat-card-header>
+    <img
+      mat-card-image
+      src="./assets/images/home_images/telegram.png"
+      alt="imagen Telegram"
+    />
+    <mat-card-content class="card-content">
+      <p>
+        Descarga nuestro manual para obtener información detallada sobre cómo
+        utilizar nuestra aplicación de Telegram.
+      </p>
+    </mat-card-content>
+    <mat-card-actions class="card-actions">
+      <button
+        mat-stroked-button
+        color="primary"
+        class="download-button"
+        (click)="downloadPdf('telegram')"
+      >
+        Descargar
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

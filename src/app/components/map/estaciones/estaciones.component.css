@@ -1,0 +1,166 @@
+/* map.component.css */
+.map-container {
+  width: 100%;
+  height: 93vh;
+  position: absolute;
+}
+
+.buttons-control-right {
+  position: absolute; /* Posicionamiento absoluto para los botones */
+  top: 10px; /* Alineación vertical */
+  display: flex; /* Organizar botones en fila */
+  flex-direction: column; /* Los botones se apilan verticalmente */
+  right: 7px;
+}
+
+.buttons-control-left {
+  position: absolute;
+  z-index: 999;
+  top: 3.5rem;
+  left: 0;
+}
+.div-btn-config {
+  margin: 0 0 5px 5px;
+}
+.div-btn-search {
+  margin: 0 0 5px 5px;
+}
+
+
+.div-btn-layer-right {
+  top: 1.5rem;
+  right: 0;
+}
+
+.div-btn-info-right {
+  top: 4.5rem;
+  right: 0;
+}
+
+.container-opt-layers {
+  position: absolute;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  right: 0.15rem;
+  z-index: 100;
+  top: 2rem;
+  width: 100px;
+}
+
+/*
+  Estilos para div de opciones config estaciones
+  */
+
+.configEstaciones {
+  z-index: 999999 !important;
+  position: absolute;
+  top: 6rem;
+  left: 3rem;
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 0 10px 0 10px;
+  border-radius: 1rem;
+  height: 430px;
+  max-height: 600px;
+  overflow-y: auto;
+  width: 290px;
+  font-size: 12px;
+}
+
+.div-searchMarker {
+  top: 0rem;
+  left: 3rem;
+  position: absolute;
+}
+
+
+/*Estilos para la leyenda de las estaciones */
+.legendStations {
+  width: auto;
+  height: auto;
+  z-index: 999 !important;
+  position: absolute;
+  bottom: 1.2rem;
+  right: 0.6rem;
+}
+
+/*Estilo botones*/
+.bx-info-circle {
+  color: #007ab4;
+}
+
+/*
+  Logo INAMHI
+  */
+.logoINAMI {
+  position: absolute;
+  z-index: 2000;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+}
+
+.logoINAMI img {
+  width: 200px;
+}
+
+/*
+  Estilos para el grafico
+  */
+.graphData {
+  position: absolute;
+  left: 46%;
+  top: 2rem;
+  transform: translate(-50%, -50%);
+  width: calc(100vw - 200px);
+  margin: 0 5%;
+  z-index: 1000 !important;
+}
+.container-button-close {
+  background-color: rgb(208, 208, 208);
+  align-items: center;
+  display: flex;
+  height: 30px;
+  justify-content: flex-end;
+  border-radius: 5px 5px 0 0;
+}
+.btnX {
+  height: 25px;
+  width: 25px;
+  margin: 2px 5px 2px 0;
+}
+
+/*
+Estilos figuras con plotly
+*/
+
+.figurePlotly {
+  width: 100%;
+  height: 500px;
+}
+
+.figurePlotlyCelec {
+  width: 100%;
+  height: calc(95vh - 100px);
+}
+
+@media (max-width: 768px) {
+  .map-container {
+    height: 70vh;
+  }
+  .logoINAMI img {
+    width: 120px !important;
+  }
+}
+
+@media (max-height: 700px) {
+  .map-container {
+    height: 93vh;
+  }
+  .logoINAMI img {
+    width: 150px !important;
+  }
+}

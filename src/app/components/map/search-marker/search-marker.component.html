@@ -1,0 +1,20 @@
+<div class="div-searchMarker">
+  <input
+    type="text"
+    [(ngModel)]="selectedCode"
+    (input)="updateSuggestions($event)"
+    placeholder="Ingrese el código de estación"
+  />
+
+  @if(existStations){
+  <div class="error">
+    <mat-error>No existe la estación</mat-error>
+  </div>
+  } @if(suggestions.length > 0){
+  <ul>
+    @for(suggestion of suggestions;track $index){
+    <li (click)="selectSuggestion(suggestion)">{{ suggestion }}</li>
+    }
+  </ul>
+  }
+</div>

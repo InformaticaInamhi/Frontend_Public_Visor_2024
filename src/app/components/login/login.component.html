@@ -1,0 +1,55 @@
+<div class="form-login-container">
+  <form class="form-login" [formGroup]="loginFormUser">
+    <h1>Inicio de Sesión</h1>
+    <div class="logoUser">
+      <i class="bx bx-user bx-custom-size bx-border-circle"></i>
+    </div>
+    <mat-form-field appearance="fill">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email" />
+      @if (loginFormUser.get('email')?.errors?.['required']) {
+      <mat-error> Email es <strong>requerido</strong> </mat-error>
+      }@else if (loginFormUser.get('email')?.errors?.['email']) {
+      <mat-error>
+        Por favor, ingresa un <strong>email</strong> valido
+      </mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Password</mat-label>
+      <input
+        matInput
+        formControlName="password"
+        [type]="showPassword ? 'text' : 'password'"
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="showPassword = !showPassword"
+        [attr.aria-label]="'showPassword password'"
+        [attr.aria-pressed]="showPassword"
+      >
+        <mat-icon>{{
+          showPassword ? "visibility_off" : "visibility"
+        }}</mat-icon>
+      </button>
+
+      @if (loginFormUser.get('password')?.errors?.['required']) {
+      <mat-error> Password es <strong>requerido</strong> </mat-error>
+      }
+    </mat-form-field>
+
+    <div class="btn-login-container">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="loginFormUser.invalid"
+        (click)="onSubmit()"
+      >
+        Login
+      </button>
+    </div>
+  </form>
+</div>

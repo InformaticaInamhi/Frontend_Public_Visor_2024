@@ -1,0 +1,57 @@
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+/*  Estilos para el openSnackBar*/
+
+.custom-snackbar-button {
+  border-radius: 2px !important;
+  text-align: center;
+  margin-top: 19% !important;
+}
+
+.custom-snackbar-button button {
+  background-color: rgba(255, 255, 255, 0.4);
+  color: rgb(58, 58, 58, 0.548) !important;
+  border: rgba(58, 58, 58, 0.548) solid 1px;
+}
+.custom-styleRed {
+  --mdc-snackbar-container-color: rgba(255, 17, 0, 0.6);
+  --mdc-snackbar-supporting-text-color: rgb(0, 0, 0);
+}
+
+.custom-styleYellow {
+  --mdc-snackbar-container-color: rgba(255, 238, 0, 0.8);
+  --mdc-snackbar-supporting-text-color: rgb(0, 0, 0);
+}
+.custom-styleGreen {
+  --mdc-snackbar-container-color: rgba(0, 160, 40, 0.8);
+  --mdc-snackbar-supporting-text-color: rgb(0, 0, 0);
+}
+
+.btn-search {
+  margin-left: 1rem;
+  padding: 10px 20px;
+  border: 1px solid #ff4081;
+  color: #ff4081;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  border-radius: 5px;
+}
+
+.btn-search:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+
+

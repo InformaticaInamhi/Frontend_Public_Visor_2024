@@ -1,0 +1,96 @@
+<div #mapElement id="map" class="map-container">
+  <!-- app filtro de estaciones -->
+  @if(showHideGraph){
+  <div class="graphData">
+    <div class="container-button-close">
+      <button
+        mat-mini-fab
+        color="warn"
+        (click)="showHideGraph = false"
+        class="btnX"
+      >
+        X
+      </button>
+    </div>
+
+    <app-meteo-hidro [infoStation]="infoStation"></app-meteo-hidro>
+  </div>
+  }
+
+  <app-config-map
+    (eventSendData)="reloadMarkersStation($event)"
+    [stationNetwork]="stationNetwork"
+    class="configEstaciones"
+    [hidden]="!btnConfigMap"
+  ></app-config-map>
+
+  @if(!btnLegendStations){
+  <app-station-description class="legendStations"></app-station-description>
+  }
+
+  <!-- logo INAMHI -->
+  <div class="logoINAMI">
+    <img [src]="logoInamhi.path" [alt]="logoInamhi.name" />
+  </div>
+
+  <!-- Botones a la izquierda -->
+  <div class="buttons-control-left">
+    <div class="div-btn-search">
+      <button
+        class="bx bx-search bx-sm"
+        (click)="divSearchMarker = !divSearchMarker"
+      ></button>
+    </div>
+    @if(divSearchMarker){
+    <div class="div-searchMarker"><app-search-marker></app-search-marker></div>
+
+    }
+
+    <div class="div-btn-config">
+      <button
+        class="bx bx-cog bx-sm"
+        (click)="btnConfigMap = !btnConfigMap; divSearchMarker = false"
+      ></button>
+    </div>
+  </div>
+</div>
+
+<!-- Botones a la derecha -->
+<div #btnRef class="ol-control buttons-control-right">
+  <div class="ol-control div-btn-layer-right">
+    @if (!selectVisible) {
+    <button
+      class="bx bxs-layer bx-sm div-btn-layer-right"
+      (mouseenter)="selectVisible = true"
+      [hidden]="!selectVisible"
+    ></button>
+    }
+  </div>
+
+  @if (selectVisible) {
+  <div
+    class="container-opt-layers"
+    (mouseenter)="selectVisible = true"
+    (mouseleave)="selectVisible = false"
+  >
+    @for (item of opt_layers_radio; track item.id) {
+    <label>
+      <input
+        type="radio"
+        [value]="item.id"
+        [formControl]="selectedLayerControl"
+        (change)="onChangeBaseLayer(item.value)"
+      />
+      {{ item.name }}
+    </label>
+    }
+  </div>
+  }
+
+  <div class="ol-control div-btn-info-right">
+    <button
+      class="bx bx-info-circle bx-sm"
+      (click)="btnLegendStations = !btnLegendStations"
+    ></button>
+  </div>
+</div>

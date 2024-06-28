@@ -1,0 +1,29 @@
+mat-nav-list {
+  max-width: 230px;
+}
+
+mat-list-item {
+  display: flex;
+  align-items: center;
+  max-width: 200px;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border-radius: 0.625rem;
+  background-color: rgb(38, 60, 78);
+}
+
+mat-list-item:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+mat-icon {
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.btn-title {
+  color: #fff;
+  margin-left: 1rem;
+  white-space: initial;
+  text-align: center;
+}

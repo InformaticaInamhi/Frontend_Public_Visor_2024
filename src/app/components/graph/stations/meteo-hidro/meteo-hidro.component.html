@@ -1,0 +1,66 @@
+<mat-card class="cardGraphData">
+  <!-- Funcionalidad para consultar datos de estaciones y descargar en csv -->
+
+  <div class="headergraphData">
+    <mat-form-field appearance="fill">
+      <mat-label
+        >Parametros disponibles estación {{ infoStation!.punto_obs }}</mat-label
+      >
+      <mat-select #select (selectionChange)="activateChart($event.value)">
+        @if(weatherParameters.length > 0){ @for(weather_opc of
+        weatherParameters; track $index){
+        <mat-option [value]="weather_opc">
+          {{ weather_opc.parametro }}
+        </mat-option>
+        } }@else{
+        <mat-option disabled>No hay parametros disponibles</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+    @if(permissionQueryForm){
+    <button
+      mat-icon-button
+      [matMenuTriggerFor]="menu"
+      aria-label="Example icon-button with a menu"
+    >
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button
+        mat-menu-item
+        title="Buscar por un rango de fechas"
+        (click)="btnCalendarForm = !btnCalendarForm"
+      >
+        <mat-icon>calendar_today</mat-icon>
+        <span>Buscar por fecha</span>
+      </button>
+
+      <button
+        mat-menu-item
+        [disabled]="exportDataStation_csv!.length === 0"
+        title="Descargar información como CSV"
+        color="primary"
+        (click)="ExportDataCsv()"
+      >
+        <mat-icon class="bx bxs-download"></mat-icon>
+        <span>Descargar como CSV</span>
+      </button>
+    </mat-menu>
+    }
+  </div>
+  <div class="container-form-date">
+    @if(btnCalendarForm){
+    <app-form-date
+      [maxRangeDays]="maxRangeDays"
+      (eventSendData)="getValueForm($event)"
+    >
+    </app-form-date>
+    }
+  </div>
+
+  <mat-card-content class="figurePlotly">
+    <figure id="dataStation" [hidden]="!showHideGraph"></figure>
+  </mat-card-content>
+</mat-card>
+
+
