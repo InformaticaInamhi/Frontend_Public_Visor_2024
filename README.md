@@ -9,10 +9,32 @@ El Visor Hidrológico Meteorológico es un repositorio de código abierto enfoca
 
 ## Instalación
 Para instalar y configurar el entorno localmente, sigue estos pasos:
-1. Clona el repositorio: `git clone https://github.com/KevinChangoluisa/visor-hidrometeorologico`
-2. Instala las dependencias necesarias: `npm install`
-3. Ejecuta el servidor de desarrollo: `ng serve`
-4. Abre `http://localhost:4200/` en tu navegador para ver la aplicación en funcionamiento.
+
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/KevinChangoluisa/visor-hidrometeorologico
+   ```
+
+2. Instala las dependencias necesarias:
+   ```bash
+   npm install
+   ```
+
+3. Crea las variables de entorno con la siguiente estructura en el archivo `src/environments/environment.ts`:
+   ```typescript
+   export const environment = {
+     production: false,
+     urlBack: 'https://urback/',
+     mapboxAccessToken: 'access_token',
+   };
+   ```
+
+4. Ejecuta el servidor de desarrollo:
+   ```bash
+   ng serve
+   ```
+
+5. Abre [http://localhost:4200/](http://localhost:4200/) en tu navegador para ver la aplicación en funcionamiento.
 
 ## Uso
 Utiliza la interfaz para navegar y explorar los diversos módulos de visualización. Los datos se presentan de forma interactiva y detallada, facilitando el análisis y la comprensión de la información meteorológica e hidrológica.
