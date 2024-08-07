@@ -32,14 +32,3 @@ export const itemsLegendStations = [
   { description: 'Sin Transmisión', color: '#fd7667', value: '' }, //red
   { description: 'Mantenimiento', color: '#FFC300 ', value: '' }, //yellow
 ];
-
-export const logosInamhi = [
-  {
-    name: 'inamhi_logo_letra_azul',
-    path: './assets/logos/inamhi-logo-LETRA-AZUL.png',
-  },
-  {
-    name: 'inamhi_logo_letra_blanca',
-    path: './assets/logos/inamhi-logo-LETRA-BLANCA.png',
-  },
-];

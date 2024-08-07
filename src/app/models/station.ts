@@ -11,7 +11,7 @@ export interface Station {
   id_categoria: number;
   id_estado_estacion: number;
 
-  reginomb: string; //falta estee
+  reginomb: string;
   provincia: string;
   canton: string;
   punto_obs: string;

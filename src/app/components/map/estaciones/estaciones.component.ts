@@ -16,7 +16,6 @@ import { ConfigMapComponent } from '../../forms/config-map/config-map.component'
 import { MeteoHidroComponent } from '../../graph/stations/meteo-hidro/meteo-hidro.component';
 import {
   FormOptionsStations,
-  logosInamhi,
   opt_layers_radio,
   valuesFormConfigMap,
 } from '../config-map-estaciones';
@@ -55,9 +54,6 @@ export class EstacionesComponent implements AfterViewInit {
   btnConfigMap: boolean = false;
   btnFormFirms: boolean = true;
   divSearchMarker: boolean = false;
-
-  //* Logos para el mapa //default letras azul
-  logoInamhi = logosInamhi[0];
 
   showHideGraph: boolean = false;
 
