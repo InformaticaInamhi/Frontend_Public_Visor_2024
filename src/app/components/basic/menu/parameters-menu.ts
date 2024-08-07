@@ -6,4 +6,5 @@ export const menu = [
     icon: 'map',
   },
   { id: 2, name: 'Guías de uso', path: 'repositorio', icon: 'book' },
+  { id: 2, name: 'Guías de uso', path: 'repositorio', icon: 'book' },
 ];
