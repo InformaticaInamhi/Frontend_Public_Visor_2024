@@ -29,9 +29,8 @@ Estilos figuras con plotly
 */
 
 .figurePlotly {
-  width: 100%;
+  width: auto;
   height: 600px;
-  margin-top: -10px;
 }
 
 .figurePlotlyCelec {
@@ -65,7 +64,7 @@ Estilos figuras con plotly
 
 #dataStation {
   min-height: 400px;
-  max-height: 600px;
+  max-height: 550px;
   height: 100%;
 }
 
