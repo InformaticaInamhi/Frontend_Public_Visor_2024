@@ -51,7 +51,7 @@ export class MeteoHidroComponent implements OnInit {
 
   /*Formulario para obtener datos hidro-meteo segun rango */
   activateFormDate: boolean = false;
-  maxRangeDays: number = 10;
+  maxRangeDays: number = 30;
   isValidDateRange: boolean = true;
 
   /* app form date */
@@ -72,6 +72,10 @@ export class MeteoHidroComponent implements OnInit {
     if (this.auth.getToken() != null) {
       this.userServ.accessQueryDate().subscribe((res: boolean) => {
         this.permissionQueryForm = res;
+      });
+
+      this.userServ.numDaysQuery().subscribe((res: number) => {
+        this.maxRangeDays = res;
       });
     }
   }

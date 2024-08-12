@@ -69,6 +69,8 @@ export class LoginComponent implements OnInit {
       return;
     }
 
+    this.authService.clearSession();
+
     if (this.loginFormUser.valid) {
       this.spinnerService.show(true);
       const { email, password } = this.loginFormUser.value;
