@@ -34,7 +34,16 @@ export class GraphMeteoHidroService {
     let x1: any;
 
     if (objetoConDatos && objetoConDatos.data.length > 0) {
+      // Obtener la fecha inicial (x0)
       x0 = objetoConDatos.data[0].fecha.substr(0, 10);
+      // Convertir x0 a un objeto Date y restar un día
+      let fechaInicial = new Date(x0);
+      fechaInicial.setDate(fechaInicial.getDate() - 1);
+
+      // Convertir de nuevo la fecha a formato 'yyyy-mm-dd'
+      x0 = fechaInicial.toISOString().substr(0, 10);
+
+      // Obtener la fecha final (x1)
       x1 = this.setXlimSup(objetoConDatos.data);
     }
 
@@ -159,7 +168,9 @@ export class GraphMeteoHidroService {
         hovertemplate = d.data.map(
           (a: any) =>
             `<b>%{data.name} Velocidad: </b>${a.valor_velocidad} m/s<br>` +
-            `<b>%{data.name} Dirección: </b>${this.getDirectionText(a.valor_direccion)}`+
+            `<b>%{data.name} Dirección: </b>${this.getDirectionText(
+              a.valor_direccion
+            )}` +
             '<extra></extra>'
         );
       } else {
