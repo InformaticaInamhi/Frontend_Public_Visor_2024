@@ -112,7 +112,7 @@ export class EstacionesComponent implements AfterViewInit {
    */
   getStations() {
     this.stationService
-      .getAllStationsbyAplication()
+      .getAllStationsbyOwners()
       .subscribe((data: Station[]) => {
         setTimeout(() => {
           this.spinnerService.show(false);
