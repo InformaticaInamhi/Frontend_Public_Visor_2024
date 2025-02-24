@@ -14,7 +14,7 @@
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "baseHref": "./",
-            "outputPath": "dist/datosclima",
+            "outputPath": "dist/visorclima",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": ["zone.js"],

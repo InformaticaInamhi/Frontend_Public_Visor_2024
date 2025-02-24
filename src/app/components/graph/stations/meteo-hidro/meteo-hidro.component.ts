@@ -23,8 +23,7 @@ import {
   ParametrosStation,
 } from '../../../../models/parameterStation';
 import { Station } from '../../../../models/station';
-import { AuthService } from '../../../../services/auth/auth.service';
-import { UserService } from '../../../../services/user/user.service';
+
 @Component({
   selector: 'app-meteo-hidro',
   standalone: true,
@@ -65,20 +64,8 @@ export class MeteoHidroComponent implements OnInit {
     private exportData: ExportDataService,
     private spinnerService: SpinnerService,
     private notificationService: NotificationsService,
-    private graphMH_service: GraphMeteoHidroService,
-    private auth: AuthService,
-    private userServ: UserService
-  ) {
-    if (this.auth.getToken() != null) {
-      this.userServ.accessQueryDate().subscribe((res: boolean) => {
-        this.permissionQueryForm = res;
-      });
-
-      this.userServ.numDaysQuery().subscribe((res: number) => {
-        this.maxRangeDays = res;
-      });
-    }
-  }
+    private graphMH_service: GraphMeteoHidroService
+  ) {}
   ngOnInit(): void {
     this.id_categoria = this.infoStation.id_categoria;
     this.id_estacion = this.infoStation.id_estacion;
