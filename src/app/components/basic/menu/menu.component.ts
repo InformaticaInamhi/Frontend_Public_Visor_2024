@@ -16,8 +16,13 @@ export class MenuComponent {
   @Output() changeComponentEventEmitter: EventEmitter<string> =
     new EventEmitter();
 
-    items_menu = menu;
+  items_menu = menu;
   changeComponent(path: string) {
-    this.changeComponentEventEmitter.emit(path);
+    if (path.startsWith('https')) {
+      // Si es una URL externa, redirigir el navegador
+      window.location.href = path;
+    } else {
+      this.changeComponentEventEmitter.emit(path);
+    }
   }
 }
