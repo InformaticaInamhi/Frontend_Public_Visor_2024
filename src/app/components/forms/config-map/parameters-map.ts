@@ -11,8 +11,8 @@ export const station_network = [
 
 export const station_status = [
   { name: 'Transmitiendo', value: 1 },
-  { name: 'Sin transmisión', value: 3 },
-  { name: 'Mantenimiento', value: 2 },
+  { name: 'Sin transmisión', value: 2 },
+  { name: 'Mantenimiento', value: 3 },
 ];
 
 export const type_station = [

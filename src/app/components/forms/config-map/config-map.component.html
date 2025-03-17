@@ -1,9 +1,29 @@
+<div class="container-button-close">
+  <button mat-mini-fab color="warn" class="btnX" (click)="onClose()">X</button>
+</div>
+
 <!-- OPCIONES CONFIGURACION MAPA -->
 <div class="configEstaciones-title">
   <p>Configuración estaciones</p>
 </div>
 
 <form [formGroup]="FormConfigStation" class="form-config">
+  <div class="select-network">
+    <mat-form-field appearance="fill">
+      <mat-label>Selecciona la red de estaciones</mat-label>
+      <mat-select
+        formControlName="station_network"
+        (selectionChange)="changeItemFilter()"
+      >
+        <mat-option [value]="0">Todas las estaciones</mat-option>
+        @for(network of stationNetwork; track $index){
+        <mat-option [value]="network.id_propietario">
+          {{ network.propietario }}
+        </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
   <div formArrayName="station_captor" class="categories">
     <div class="configEstaciones-title"><p>Tipo de medición</p></div>
 

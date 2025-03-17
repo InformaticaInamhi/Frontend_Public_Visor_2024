@@ -34,3 +34,20 @@ mat-form-field {
 ::ng-deep .mat-select-panel {
   margin-top: 2.5rem;
 }
+
+.container-button-close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+.btnX {
+  background-color: red;
+  color: white;
+  width: 25px;
+  height: 25px;
+  transition: background-color 0.3s ease; /* Transición suave */
+}
+
+.btnX:hover {
+  background-color: darkred; /* Color más oscuro al hacer hover */
+}

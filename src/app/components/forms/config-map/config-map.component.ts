@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -6,16 +6,14 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {
-  station_captor,
-  station_status,
-  type_station,
-} from './parameters-map';
+import { station_captor, station_status, type_station } from './parameters-map';
 
+import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { valuesFormConfigMap } from '../../map/config-map-estaciones';
 @Component({
   selector: 'app-config-map',
   templateUrl: './config-map.component.html',
@@ -28,11 +26,13 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
+    MatButtonModule,
   ],
 })
 export class ConfigMapComponent implements OnInit {
   @Output() eventSendData = new EventEmitter<any>();
   @Input() stationNetwork: OwnerStation[] = [];
+  @Output() closeConfig = new EventEmitter<void>();
 
   station_captor = station_captor;
   station_status = station_status;
@@ -40,15 +40,20 @@ export class ConfigMapComponent implements OnInit {
 
   FormConfigStation!: FormGroup;
 
+  formOptions = valuesFormConfigMap;
+
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.FormConfigStation = this.fb.group({
+      station_network: 0, // Preselecciona el valor 0
       station_captor: new FormArray(
         this.station_captor.map((item) => this.fb.control(item.value === 2))
       ),
       station_status: new FormArray(
-        this.station_status.map((item) => this.fb.control(item.value === 1))
+        this.station_status.map((item) =>
+          this.fb.control(this.formOptions.station_status.includes(item.value))
+        )
       ),
       station_type: new FormArray(
         this.station_type.map((item) =>
@@ -80,6 +85,10 @@ export class ConfigMapComponent implements OnInit {
       station_status: selectedStatus,
       station_type: selectedType,
     });
+  }
+
+  onClose() {
+    this.closeConfig.emit();
   }
 }
 
