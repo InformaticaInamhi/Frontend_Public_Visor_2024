@@ -11,12 +11,14 @@ export type ol_radioConfig = {
 };
 
 export const valuesFormConfigMap: FormOptionsStations = {
+  station_network: 0,
   station_captor: [2],
   station_status: [1],
   station_type: [1, 2, 3],
   isCheckedGroup: true,
 };
 export interface FormOptionsStations {
+  station_network: number;
   station_captor: number[];
   station_status: number[];
   station_type: number[];
@@ -31,4 +33,15 @@ export const itemsLegendStations = [
   { description: 'Transmitiendo', color: '#229954', value: '' }, //grenn
   { description: 'Sin Transmisión', color: '#fd7667', value: '' }, //red
   { description: 'Mantenimiento', color: '#FFC300 ', value: '' }, //yellow
+];
+
+export const logosInamhi = [
+  {
+    name: 'inamhi_logo_letra_azul',
+    path: './assets/logos/inamhi-logo-LETRA-AZUL.png',
+  },
+  {
+    name: 'inamhi_logo_letra_blanca',
+    path: './assets/logos/inamhi-logo-LETRA-BLANCA.png',
+  },
 ];

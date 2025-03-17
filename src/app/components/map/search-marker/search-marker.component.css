@@ -37,3 +37,8 @@
 .div-searchMarker ul li:hover {
   background-color: #f8f8f8;
 }
+
+.active {
+  background-color: #d3d3d3;
+  cursor: pointer;
+}

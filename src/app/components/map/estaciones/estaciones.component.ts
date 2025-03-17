@@ -6,7 +6,12 @@ import { Station } from '../../../models/station';
 import { MarkerService } from '../../../services/openlayer/marker/marker.service';
 
 import { MatButtonModule } from '@angular/material/button';
+import {
+  MatCheckboxChange,
+  MatCheckboxModule,
+} from '@angular/material/checkbox';
 import { TitleService } from '../../../services/header/title.service';
+import { hidros } from '../../../services/openlayer/geojson/hidro-geojson';
 import { DynamicClusterOlService } from '../../../services/openlayer/marker-cluster/dynamic-cluster-ol.service';
 import { OpenLayerService } from '../../../services/openlayer/open-layer.service';
 import { SpinnerService } from '../../../services/spinner/spinner.service';
@@ -16,6 +21,7 @@ import { ConfigMapComponent } from '../../forms/config-map/config-map.component'
 import { MeteoHidroComponent } from '../../graph/stations/meteo-hidro/meteo-hidro.component';
 import {
   FormOptionsStations,
+  logosInamhi,
   opt_layers_radio,
   valuesFormConfigMap,
 } from '../config-map-estaciones';
@@ -33,114 +39,194 @@ import { StationDescriptionComponent } from '../station-description/station-desc
     MeteoHidroComponent,
     MatButtonModule,
     SearchMarkerComponent,
+    MatCheckboxModule,
   ],
   templateUrl: './estaciones.component.html',
   styleUrl: './estaciones.component.css',
 })
 export class EstacionesComponent implements AfterViewInit {
-  valuesFormConfigMap: FormOptionsStations = valuesFormConfigMap;
+  // Configuración de formularios
+  formOptions: FormOptionsStations = valuesFormConfigMap;
+  layerSelectionControl = new FormControl(1);
 
-  @ViewChild('mapElement', { static: true }) mapElement!: ElementRef;
-  @ViewChild('btnRef') buttonElement!: ElementRef;
+  // Referencias de elementos del DOM
+  @ViewChild('mapContainer', { static: true }) mapContainer!: ElementRef;
+  @ViewChild('btnRef') toggleButtonElement!: ElementRef;
 
-  private markersData!: Station[];
-  private stations!: Station[];
-  selectVisible: boolean = false;
-  opt_layers_radio = opt_layers_radio;
-  selectedLayerControl = new FormControl(1);
+  // Variables de datos
+  private markerData!: Station[];
+  private stationList!: Station[];
+  geoHidros = hidros.map((hydro) => ({
+    ...hydro,
+    id: hydro.id.toString(),
+  }));
 
-  //* Botones para el map
-  btnLegendStations: boolean = false;
-  btnConfigMap: boolean = false;
-  btnFormFirms: boolean = true;
-  divSearchMarker: boolean = false;
-
-  showHideGraph: boolean = false;
-
-  //opciones para las graficas
+  selectedHydroFeatures: any[] = [];
   infoStation: any = {};
-
   stationNetwork: OwnerStation[] = [];
 
+  // Opciones de Visualización
+  isDropdownVisible: boolean = false;
+  isGraphVisible: boolean = false;
+  isHydroLayerVisible: boolean = false;
+  layerOptions = opt_layers_radio;
+
+  // Configuración de botones y elementos del mapa
+  isLegendVisible: boolean = false;
+  isConfigMapVisible: boolean = false;
+  isFormVisible: boolean = true;
+  isSearchMarkerVisible: boolean = false;
+
+  // Logos para el mapa
+  inamhiLogo = logosInamhi[0];
+  isSelectDropdownVisible: boolean = false;
+  opt_layers_radio = opt_layers_radio;
+
   constructor(
-    private openLayerService: OpenLayerService,
-    private markerService: MarkerService,
-    private clusterService: DynamicClusterOlService,
+    private mapLayerService: OpenLayerService,
+    private mapMarkerService: MarkerService,
+    private clusterMarkerService: DynamicClusterOlService,
     private stationService: StationService,
-    private filterService: FilterService,
-    private spinnerService: SpinnerService,
-    private titleService: TitleService
+    private stationFilterService: FilterService,
+    private loadingSpinnerService: SpinnerService,
+    private headerTitleService: TitleService // private geoJsonService: GeojsonService
   ) {
-    this.titleService.changeTitle(
+    this.headerTitleService.changeTitle(
       'Visor de estaciones meteorológicas e hidrológicas'
     );
-    this.markerService.getMarkerClickedEvent().subscribe((id_station) => {
+    this.mapMarkerService.getMarkerClickedEvent().subscribe((id_station) => {
       this.stationService
         .getMetadataStation(id_station)
         .subscribe((metadata) => {
+          this.resetAllViews();
           this.infoStation = metadata;
-          this.showHideGraph = true;
+          this.isGraphVisible = true;
         });
     });
   }
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.spinnerService.show(true);
+      this.loadingSpinnerService.show(true);
     }, 0);
-    this.openLayerService.initializeMap(this.mapElement.nativeElement.id);
+    this.mapLayerService.initializeMap(this.mapContainer.nativeElement.id);
     this.addCustomControl();
-    this.getStations();
+    this.getstationList();
   }
 
   onChangeBaseLayer(layerName: string): void {
-    this.openLayerService.changeBaseLayer(layerName);
+    this.mapLayerService.changeBaseLayer(layerName);
   }
 
   /**
    * Agrega un control personalizado al mapa.
    */
   addCustomControl(): void {
-    const map = this.openLayerService.getMap();
-    const buttonElement = this.buttonElement.nativeElement;
-    const customControl = new Control({ element: buttonElement });
+    const map = this.mapLayerService.getMap();
+    const toggleButtonElement = this.toggleButtonElement.nativeElement;
+    const customControl = new Control({ element: toggleButtonElement });
     map.addControl(customControl);
   }
 
   /**
    * Obtiene las estaciones del servicio y las agrega como marcadores en el mapa.
    */
-  getStations() {
-    this.stationService
-      .getAllStationsbyOwners()
-      .subscribe((data: Station[]) => {
-        setTimeout(() => {
-          this.spinnerService.show(false);
-        }, 0);
-        this.stations = data;
-        this.reloadMarkersStation(this.valuesFormConfigMap);
-      });
+  getstationList() {
+    this.stationService.getAllStationsINAMHI().subscribe((data: Station[]) => {
+      setTimeout(() => {
+        this.loadingSpinnerService.show(false);
+      }, 0);
+      this.stationList = data;
+      this.stationNetwork = this.getOwnersstationList(data);
+      this.reloadMarkersStation(this.formOptions);
+    });
   }
 
-  showClusteredMarkers(): void {
-    const map = this.openLayerService.getMap();
-    this.clusterService.initcluster(map, this.markersData);
-  }
+  getOwnersstationList(stationListInfo: Station[]): OwnerStation[] {
+    let uniqueOwners: Map<number, OwnerStation> = new Map();
+    stationListInfo.forEach((item) => {
+      if (!uniqueOwners.has(item.id_propietario)) {
+        uniqueOwners.set(item.id_propietario, {
+          id_propietario: item.id_propietario,
+          propietario: item.propietario,
+        });
+      }
+    });
 
-  showUnclusteredMarkers(): void {
-    const map = this.openLayerService.getMap();
-    this.markerService.addMarkers(map, this.markersData);
+    let filterOwners: OwnerStation[] = Array.from(uniqueOwners.values());
+    filterOwners.sort((a, b) => a.id_propietario - b.id_propietario);
+    return filterOwners;
   }
 
   reloadMarkersStation(configValues?: any) {
     if (configValues) {
-      this.valuesFormConfigMap = configValues;
+      this.formOptions = configValues;
     }
-    this.markersData = this.filterService.filterStations(
-      this.stations,
-      this.valuesFormConfigMap
+
+    this.markerData = this.stationFilterService.filterStations(
+      this.stationList,
+      this.formOptions
     );
     this.showUnclusteredMarkers();
+  }
+
+  showUnclusteredMarkers(): void {
+    const map = this.mapLayerService.getMap();
+    this.mapMarkerService.addMarkers(map, this.markerData);
+  }
+
+  resetAllViews() {
+    this.isHydroLayerVisible = false;
+    this.isConfigMapVisible = false;
+    this.isSearchMarkerVisible = false;
+  }
+
+  toggleView(view: 'layersHidro' | 'configMap' | 'searchStation') {
+    if (view === 'layersHidro') {
+      this.isHydroLayerVisible = !this.isHydroLayerVisible;
+      this.isConfigMapVisible = false;
+      this.isSearchMarkerVisible = false;
+    } else if (view === 'configMap') {
+      this.isConfigMapVisible = !this.isConfigMapVisible;
+      this.isHydroLayerVisible = false;
+      this.isSearchMarkerVisible = false;
+    } else if (view === 'searchStation') {
+      this.isSearchMarkerVisible = !this.isSearchMarkerVisible;
+      this.isHydroLayerVisible = false;
+      this.isConfigMapVisible = false;
+    }
+  }
+
+  toggleLayerSelection(event: MatCheckboxChange, hidro: any) {
+    const isChecked = event.checked;
+    this.mapLayerService.clearAllLayers();
+    if (isChecked) {
+      // Agrega el hidro a la lista de seleccionados
+      this.selectedHydroFeatures.push(hidro);
+    } else {
+      // Elimina el hidro de la lista de seleccionados
+      this.selectedHydroFeatures = this.selectedHydroFeatures.filter(
+        (h) => h.id !== hidro.id
+      );
+    }
+
+    if (this.selectedHydroFeatures.length > 0) {
+      this.selectedHydroFeatures.map((geoPath: { path: string }) => {
+        var randomColor = Math.floor(Math.random() * 16777215).toString(16);
+        // Carga el GeoJSON de la capa seleccionada
+        // this.geoJsonService
+        //   .getStateGeoJson(geoPath.path)
+        //   .subscribe((res: any) => {
+        //     this.mapLayerService.loadGeoJsonLayer(res, randomColor);
+        //   });
+      });
+    }
+  }
+
+  onKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      this.isSearchMarkerVisible = false;
+    }
   }
 }
 
