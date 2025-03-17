@@ -12,11 +12,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { AuthService } from '../../services/auth/auth.service';
-import { NotificationsService } from '../../services/notifications/notifications.service';
 import { Router } from '@angular/router';
-import { SpinnerService } from '../../services/spinner/spinner.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { TitleService } from '../../services/header/title.service';
+import { NotificationsService } from '../../services/notifications/notifications.service';
+import { SpinnerService } from '../../services/spinner/spinner.service';
 
 @Component({
   selector: 'app-login',
