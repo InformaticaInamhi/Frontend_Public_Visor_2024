@@ -1,33 +1,47 @@
+// 📌 Angular Core
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatRadioModule } from '@angular/material/radio';
-import Control from 'ol/control/Control';
-import { Station } from '../../../models/station';
-import { MarkerService } from '../../../services/openlayer/marker/marker.service';
 
+// 📌 Angular Material
 import { MatButtonModule } from '@angular/material/button';
 import {
   MatCheckboxChange,
   MatCheckboxModule,
 } from '@angular/material/checkbox';
+import { MatRadioModule } from '@angular/material/radio';
+
+// 📌 OpenLayers
+import Control from 'ol/control/Control';
+
+// 📌 Modelos
+import { Station } from '../../../models/station';
+
+// 📌 Servicios
 import { TitleService } from '../../../services/header/title.service';
-import { hidros } from '../../../services/openlayer/geojson/hidro-geojson';
 import { DynamicClusterOlService } from '../../../services/openlayer/marker-cluster/dynamic-cluster-ol.service';
+import { MarkerService } from '../../../services/openlayer/marker/marker.service';
 import { OpenLayerService } from '../../../services/openlayer/open-layer.service';
 import { SpinnerService } from '../../../services/spinner/spinner.service';
 import { FilterService } from '../../../services/stations/filter-stations/filter.service';
 import { StationService } from '../../../services/stations/station.service';
+
+
+// 📌 GeoJSON (Datos)
+import { hidros } from '../../../services/openlayer/geojson/hidro-geojson';
+
+// 📌 Componentes
 import { ConfigMapComponent } from '../../forms/config-map/config-map.component';
 import { MeteoHidroComponent } from '../../graph/stations/meteo-hidro/meteo-hidro.component';
+import { SearchMarkerComponent } from '../search-marker/search-marker.component';
+import { StationDescriptionComponent } from '../station-description/station-description.component';
+
+// 📌 Configuración y Utilidades
 import {
   FormOptionsStations,
   logosInamhi,
   opt_layers_radio,
   valuesFormConfigMap,
 } from '../config-map-estaciones';
-import { SearchMarkerComponent } from '../search-marker/search-marker.component';
-import { StationDescriptionComponent } from '../station-description/station-description.component';
-
 
 @Component({
   selector: 'app-estaciones',
@@ -91,6 +105,7 @@ export class EstacionesComponent implements AfterViewInit {
     private stationFilterService: FilterService,
     private loadingSpinnerService: SpinnerService,
     private headerTitleService: TitleService,
+
   ) {
     this.headerTitleService.changeTitle(
       'Visor de estaciones meteorológicas e hidrológicas'
@@ -107,14 +122,22 @@ export class EstacionesComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    // 🔹 Ejecuta el código después de que la vista se haya inicializado completamente
     setTimeout(() => {
+      // 🔹 Muestra el spinner de carga (loading) con un pequeño retraso (0ms)
       this.loadingSpinnerService.show(true);
     }, 0);
+
+    // 🔹 Inicializa el mapa dentro del contenedor definido en la plantilla HTML
     this.mapLayerService.initializeMap(this.mapContainer.nativeElement.id);
 
+    // 🔹 Agrega un control personalizado al mapa
     this.addCustomControl();
+
+    // 🔹 Obtiene la lista de estaciones y la carga en el mapa o en la interfaz
     this.getstationList();
   }
+
 
   onChangeBaseLayer(layerName: string): void {
     this.mapLayerService.changeBaseLayer(layerName);
