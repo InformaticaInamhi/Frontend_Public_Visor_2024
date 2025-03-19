@@ -4,7 +4,11 @@ import View from 'ol/View';
 import { defaults as defaultControls, FullScreen } from 'ol/control.js';
 import { click } from 'ol/events/condition';
 import GeoJSON from 'ol/format/GeoJSON';
-import { defaults as defaultInteractions, Select } from 'ol/interaction';
+import {
+  defaults as defaultInteractions,
+  Extent,
+  Select,
+} from 'ol/interaction';
 import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import { fromLonLat, transformExtent } from 'ol/proj';
@@ -14,6 +18,9 @@ import XYZ from 'ol/source/XYZ';
 import { Fill, Stroke, Style } from 'ol/style';
 import Text from 'ol/style/Text';
 import { config_OL } from './config-ol';
+import { getCenter } from 'ol/extent';
+import { Feature } from 'ol';
+import { Point } from 'ol/geom';
 @Injectable({
   providedIn: 'root',
 })
@@ -136,5 +143,126 @@ export class OpenLayerService {
       this.map.removeLayer(this.loadedLayers[key]);
     });
     this.loadedLayers = {}; // Vacía el objeto de capas cargadas
+  }
+
+  // /**
+  //  * Agrega un GeoJSON al mapa con un color predeterminado.
+  //  * @param geoJson Datos del GeoJSON.
+  //  * @param color Color en formato hexadecimal (ejemplo: 'ff0000').
+  //  */
+  // loadGeoJsonLayer(geoJson: any, color: string = 'ff0000'): void {
+  //   if (!this.map) {
+  //     console.error('El mapa no está inicializado.');
+  //     return;
+  //   }
+
+  //   const style = new Style({
+  //     fill: new Fill({ color: `#${color}80` }), // Opacidad 50%
+  //     stroke: new Stroke({ color: `#${color}`, width: 1 }),
+  //   });
+
+  //   const vectorLayer = new VectorLayer({
+  //     source: new VectorSource({
+  //       features: new GeoJSON().readFeatures(geoJson, {
+  //         featureProjection: 'EPSG:3857',
+  //       }),
+  //     }),
+  //     style,
+  //   });
+
+  //   this.map.addLayer(vectorLayer);
+  // }
+
+  loadGeoJsonLayer(
+    geoJson: any,
+    colorBorde: string,
+    colorFondo: string,
+    opacidad: number,
+    tamanioLineaBorde: number,
+    tituloLayer: string | null
+  ): void {
+    if (!this.map) {
+      console.error('El mapa no está inicializado.');
+      return;
+    }
+
+    const layerName = tituloLayer ?? geoJson.name ?? 'GeoJSON Layer';
+
+    const vectorSource = new VectorSource({
+      features: new GeoJSON().readFeatures(geoJson, {
+        featureProjection: 'EPSG:3857',
+      }),
+    });
+
+    const features = vectorSource.getFeatures();
+    if (features.length === 0) return;
+
+    // Obtiene el centro del GeoJSON
+    const extent = vectorSource.getExtent();6
+    const center = getCenter(extent);
+
+    // Agrega una feature con el nombre en el centro del GeoJSON
+    const labelFeature = new Feature({
+      geometry: new Point(center), // ✅ Corrección: Usar `Point` correctamente
+      name: layerName,
+    });
+
+    labelFeature.setStyle(
+      new Style({
+        text: new Text({
+          text: layerName,
+          font: 'bold 40px Arial', // ✅ Letra más grande
+          fill: new Fill({ color: '#000' }), // Texto negro
+          stroke: new Stroke({ color: '#fff', width: 3 }), // Contorno blanco
+          textAlign: 'center',
+          textBaseline: 'middle',
+        }),
+      })
+    );
+
+    vectorSource.addFeature(labelFeature);
+
+    // Aplica el estilo al GeoJSON
+    const vectorLayer = new VectorLayer({
+      source: vectorSource,
+      style: new Style({
+        fill: new Fill({
+          color: `rgba(${parseInt(colorFondo.slice(0, 2), 16)}, ${parseInt(
+            colorFondo.slice(2, 4),
+            16
+          )}, ${parseInt(colorFondo.slice(4, 6), 16)}, ${opacidad})`,
+        }),
+        stroke: new Stroke({
+          color: `#${colorBorde}`,
+          width: tamanioLineaBorde,
+        }),
+      }),
+    });
+
+    this.map.addLayer(vectorLayer);
+    this.loadedLayers[layerName] = vectorLayer;
+
+    // 🔹 Ajustar zoom al GeoJSON después de agregarlo
+    this.zoomToGeoJson(vectorSource);
+  }
+
+  /**
+   * Centra el mapa en el GeoJSON y ajusta el zoom.
+   */
+  zoomToGeoJson(vectorSource: VectorSource): void {
+    if (!this.map) {
+      console.error('El mapa no está inicializado.');
+      return;
+    }
+
+    const extent = vectorSource.getExtent();
+
+    if (extent && extent[0] !== Infinity) {
+      this.map
+        .getView()
+        .fit(extent, { duration: 1000, padding: [50, 50, 50, 50] });
+    } else {
+      console.error('No se pudo calcular la extensión del GeoJSON.');
+    }
   }
 }

@@ -24,7 +24,7 @@ import { OpenLayerService } from '../../../services/openlayer/open-layer.service
 import { SpinnerService } from '../../../services/spinner/spinner.service';
 import { FilterService } from '../../../services/stations/filter-stations/filter.service';
 import { StationService } from '../../../services/stations/station.service';
-
+import { GeoServiceService } from '../../../services/openlayer/geojson/geo-service.service';
 
 // 📌 GeoJSON (Datos)
 import { hidros } from '../../../services/openlayer/geojson/hidro-geojson';
@@ -105,7 +105,7 @@ export class EstacionesComponent implements AfterViewInit {
     private stationFilterService: FilterService,
     private loadingSpinnerService: SpinnerService,
     private headerTitleService: TitleService,
-
+    private geoService: GeoServiceService
   ) {
     this.headerTitleService.changeTitle(
       'Visor de estaciones meteorológicas e hidrológicas'
@@ -131,13 +131,20 @@ export class EstacionesComponent implements AfterViewInit {
     // 🔹 Inicializa el mapa dentro del contenedor definido en la plantilla HTML
     this.mapLayerService.initializeMap(this.mapContainer.nativeElement.id);
 
+    //Llamamos al servicio para obtener el geojson
+
+    // this.geoService.getGeojsonData().subscribe((res) => {
+    //   this.mapLayerService.loadGeoJsonLayer(res);
+    // });
+
+    this.cargarGeojsonPichincha();
+
     // 🔹 Agrega un control personalizado al mapa
     this.addCustomControl();
 
     // 🔹 Obtiene la lista de estaciones y la carga en el mapa o en la interfaz
     this.getstationList();
   }
-
 
   onChangeBaseLayer(layerName: string): void {
     this.mapLayerService.changeBaseLayer(layerName);
@@ -252,6 +259,18 @@ export class EstacionesComponent implements AfterViewInit {
     if (event.key === 'Escape') {
       this.isSearchMarkerVisible = false;
     }
+  }
+
+  cargarGeojsonPichincha(): void {
+    const colorBorde = 'ff0000'; // Rojo
+    const colorFondo = '00ff00'; // Verde
+    const opacidad = 0.2; // 50% de transparencia
+    const tamanioLineaBorde = 1; // Grosor del borde
+    const tituloLayer = 'Pichincha'; // Si es null, usa geoJson.name
+
+    this.geoService.getGeojsonData().subscribe((res) => {
+      this.mapLayerService.loadGeoJsonLayer(res, colorBorde, colorFondo, opacidad, tamanioLineaBorde, tituloLayer);
+    });
   }
 }
 
