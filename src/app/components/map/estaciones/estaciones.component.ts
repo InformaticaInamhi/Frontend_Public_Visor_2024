@@ -28,6 +28,7 @@ import {
 import { SearchMarkerComponent } from '../search-marker/search-marker.component';
 import { StationDescriptionComponent } from '../station-description/station-description.component';
 
+
 @Component({
   selector: 'app-estaciones',
   standalone: true,
@@ -89,7 +90,7 @@ export class EstacionesComponent implements AfterViewInit {
     private stationService: StationService,
     private stationFilterService: FilterService,
     private loadingSpinnerService: SpinnerService,
-    private headerTitleService: TitleService // private geoJsonService: GeojsonService
+    private headerTitleService: TitleService,
   ) {
     this.headerTitleService.changeTitle(
       'Visor de estaciones meteorológicas e hidrológicas'
@@ -110,6 +111,7 @@ export class EstacionesComponent implements AfterViewInit {
       this.loadingSpinnerService.show(true);
     }, 0);
     this.mapLayerService.initializeMap(this.mapContainer.nativeElement.id);
+
     this.addCustomControl();
     this.getstationList();
   }
