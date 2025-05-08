@@ -21,7 +21,8 @@ export class StationService {
   constructor(private http: HttpClient) {}
 
   getAllStationsINAMHI(): Observable<Station[]> {
-    const url = this.urlBack + 'station_information/getAllStations/';
+    const id_canton = '1703';
+    const url = `${this.urlBack}station_information/getAllStations/?id_canton=${id_canton}`;
     return this.http.get<Station[]>(url);
   }
 
