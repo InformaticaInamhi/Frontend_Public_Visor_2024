@@ -14,6 +14,9 @@ import XYZ from 'ol/source/XYZ';
 import { Fill, Stroke, Style } from 'ol/style';
 import Text from 'ol/style/Text';
 import { config_OL } from './config-ol';
+
+import { HttpClient } from '@angular/common/http'; // 🔹 Añadir en la parte superior
+
 @Injectable({
   providedIn: 'root',
 })
@@ -29,10 +32,7 @@ export class OpenLayerService {
     'EPSG:3857'
   );
 
-  constructor() {
-    // Coordenadas del extent [minX, minY, maxX, maxY] en EPSG:4326
-  }
-
+  constructor(private http: HttpClient) {}
   /**
    * Inicializa el mapa con la configuración proporcionada y lo coloca en el elemento HTML especificado.
    * @param targetId El ID del elemento HTML donde se colocará el mapa.
@@ -136,5 +136,67 @@ export class OpenLayerService {
       this.map.removeLayer(this.loadedLayers[key]);
     });
     this.loadedLayers = {}; // Vacía el objeto de capas cargadas
+  }
+
+  /**
+   * Carga el GeoJSON de Pichincha, lo agrega al mapa, centra y ajusta el zoom.
+   */
+  loadGeoJsonPichincha(): void {
+    fetch('assets/geojson/pichincha.geojson')
+      .then((response) => response.json())
+      .then((geojsonData) => {
+        const vectorSource = new VectorSource({
+          features: new GeoJSON().readFeatures(geojsonData, {
+            featureProjection: 'EPSG:3857',
+          }),
+        });
+
+        const vectorLayer = new VectorLayer({
+          source: vectorSource,
+          style: (feature) => {
+            const geometry = feature.getGeometry();
+            if (!geometry) return undefined;
+
+            const extent = geometry.getExtent();
+            const center = [
+              (extent[0] + extent[2]) / 2,
+              (extent[1] + extent[3]) / 2,
+            ];
+
+            return new Style({
+              fill: new Fill({
+                color: 'rgba(255, 255, 0, 0.3)', // Amarillo con opacidad 0.4
+              }),
+              stroke: new Stroke({
+                color: '#FF0000', // Borde rojo
+                width: 2,
+              }),
+              text: new Text({
+                text: 'PICHINCHA',
+                font: 'bold 18px Arial',
+                fill: new Fill({ color: '#000000' }), // Negro
+                stroke: new Stroke({ color: '#FFFFFF', width: 2 }), // Borde blanco para contraste
+                textAlign: 'center',
+                textBaseline: 'middle',
+                offsetY: 0,
+                overflow: true,
+              }),
+            });
+          },
+        });
+
+        this.map.addLayer(vectorLayer);
+        this.loadedLayers['pichincha'] = vectorLayer;
+
+        // Hacer zoom a la geometría de Pichincha
+        const extent = vectorSource.getExtent();
+        this.map.getView().fit(extent, {
+          padding: [60, 60, 60, 60],
+          duration: 1000,
+        });
+      })
+      .catch((error) => {
+        console.error('Error al cargar el GeoJSON de Pichincha:', error);
+      });
   }
 }

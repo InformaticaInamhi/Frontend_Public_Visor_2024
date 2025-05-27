@@ -136,6 +136,7 @@ export class EstacionesComponent implements AfterViewInit {
 
     // 🔹 Obtiene la lista de estaciones y la carga en el mapa o en la interfaz
     this.loadStationsByProvincia();
+    this.mapLayerService.loadGeoJsonPichincha(); // 🔹 Centrar Pichincha en el mapa
   }
 
   onChangeBaseLayer(layerName: string): void {
