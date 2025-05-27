@@ -56,16 +56,15 @@ export class MeteoHidroComponent implements OnInit {
 
   onParameterSelected(param: any) {
     this.showButtons = false;
-    if (!param) {
-      return;
-    }
+
+    if (!param) return;
 
     this.selectedParameter = param;
 
-    // Extraer los nemónicos de los items seleccionados
+    // Extraer los nemónicos de los ítems seleccionados
     const tableNames = param.detalles.map((detalle: any) => detalle.nemonico);
 
-    // Preparar los datos para la consulta
+    // Preparar datos para enviar al backend
     const requestData = {
       id_estacion: this.infoStation.id_estacion,
       table_names: tableNames,
@@ -73,32 +72,54 @@ export class MeteoHidroComponent implements OnInit {
 
     this.spinnerService.show(true);
 
-    // Si el parámetro es VIENTO (id_parametro = 4), usamos `getDataWind`
-    if (
-      this.selectedParameter.id_parametro === 4 ||
-      this.selectedParameter.id_parametro === 7
-    ) {
-      this.getDataWind(requestData);
-      return;
-    }
+    const tipoEstacion = this.infoStation.id_captor;
 
-    // Si NO es viento, seguimos con el proceso normal
-    this.getDataForSelectedParameter(requestData);
+    // Estación automática
+    if (tipoEstacion === 2) {
+      // Si el parámetro es viento (4 o 7), redirigir a función especializada
+      if (
+        this.selectedParameter.id_parametro === 4 ||
+        this.selectedParameter.id_parametro === 7
+      ) {
+        this.getDataWind({
+          estacion: this.infoStation,
+          table_names: tableNames,
+        });
+        return;
+      }
+
+      this.obtenerDatosEstacionAutomatica(requestData);
+
+      // Estación convencional
+    } else if (tipoEstacion === 1) {
+      this.obtenerDatosEstacionConvencional(requestData);
+
+      // Tipo de estación no reconocido
+    } else {
+      this.spinnerService.show(false);
+      this.notificationService.openSnackBar(
+        'Tipo de estación desconocido.',
+        'X',
+        'custom-styleRed'
+      );
+    }
   }
 
-  getDataForSelectedParameter(requestData: any) {
+  /**
+   * Obtiene y procesa datos de una estación automática.
+   * @param requestData Contiene id_estacion y lista de nemónicos (table_names)
+   */
+  private obtenerDatosEstacionAutomatica(requestData: {
+    id_estacion: number;
+    table_names: string[];
+  }) {
     this.stationService.getDataStation(requestData).subscribe({
       next: (stationData: any[]) => {
-
-        console.log(stationData);
-
         this.spinnerService.show(false);
 
-        // Extraemos el primer grupo (se espera solo uno por parámetro seleccionado)
         const dataGroup = stationData[0];
 
-        // Verificamos si hay datos en alguna de las series
-        const hayDatos = dataGroup.datos.some(
+        const hayDatos = dataGroup?.datos?.some(
           (serie: any) => Array.isArray(serie.data) && serie.data.length > 0
         );
 
@@ -111,27 +132,66 @@ export class MeteoHidroComponent implements OnInit {
           return;
         }
 
-        // Convertimos fechas de cada serie a zona horaria local
         this.allData = this.convertirFechasAFechaLocal(
           dataGroup.datos,
           this.infoStation.provincia
         );
 
         this.showButtons = true;
-
-        // Si es PRECIPITACIÓN, aplicamos filtro de 10 días
-        // if (this.selectedParameter.id_parametro === 17) {
-        //   this.allData = this.filtrarPrecipitacionPorDias(10);
-        // }
-
-        // Inicializamos visualización con todos los datos
         this.dataFiltrada = [...this.allData];
         this.actualizarGrafico(this.dataFiltrada);
       },
-      error: (err) => {
+      error: () => {
         this.spinnerService.show(false);
         this.notificationService.openSnackBar(
-          'Error al obtener datos de la estación',
+          'Error al obtener datos de la estación automática.',
+          'X',
+          'custom-styleRed'
+        );
+      },
+    });
+  }
+
+  /**
+   * Obtiene y procesa datos de una estación convencional.
+   * @param requestData Contiene id_estacion y lista de nemónicos (table_names)
+   */
+  private obtenerDatosEstacionConvencional(requestData: {
+    id_estacion: number;
+    table_names: string[];
+  }) {
+    this.stationService.getDataStationConvencional(requestData).subscribe({
+      next: (stationData: any[]) => {
+        this.spinnerService.show(false);
+
+        const dataGroup = stationData[0];
+
+        const hayDatos = dataGroup?.datos?.some(
+          (serie: any) => Array.isArray(serie.data) && serie.data.length > 0
+        );
+
+        if (!hayDatos) {
+          this.notificationService.openSnackBar(
+            `No existe información de ${this.selectedParameter.name_param} disponible para la estación: ${this.infoStation.codigo}`,
+            'X',
+            'custom-styleYellow'
+          );
+          return;
+        }
+
+        this.allData = this.convertirFechasAFechaLocal(
+          dataGroup.datos,
+          this.infoStation.provincia
+        );
+
+        this.showButtons = true;
+        this.dataFiltrada = [...this.allData];
+        this.actualizarGrafico(this.dataFiltrada);
+      },
+      error: () => {
+        this.spinnerService.show(false);
+        this.notificationService.openSnackBar(
+          'Error al obtener datos de la estación convencional.',
           'X',
           'custom-styleRed'
         );
@@ -144,12 +204,8 @@ export class MeteoHidroComponent implements OnInit {
    * @param requestData Datos necesarios para la consulta.
    */
   getDataWind(requestData: any) {
-    console.log(requestData);
-
     this.stationService.getWindDataStation(requestData).subscribe({
       next: (stationData: DataStationInterface[]) => {
-        console.log(stationData);
-
         this.spinnerService.show(false);
         // Verificar si hay datos disponibles
         const hayDatos = stationData.some((series) => series.data.length > 0);
@@ -176,7 +232,6 @@ export class MeteoHidroComponent implements OnInit {
         this.actualizarGrafico(this.dataFiltrada);
       },
       error: (err) => {
-        console.error('❌ Error al obtener datos de viento:', err);
         this.spinnerService.show(false);
       },
     });

@@ -54,30 +54,50 @@ export class StationService {
   }
 
   /**
-   * function that returns the data recorded by the station
-   * @param objects catenomb, idStation,start_date, end_date
-   * @param catenomb
-   * @param idStation
-   * @param start_date
-   * @param end_date
-   * @returns data recorded by the station
+   * Retrieves hourly data from an automatic station.
+   * @param dataForm Object containing: id_estacion, table_names (nemónicos), and optional dates.
+   * @returns Observable with structured data per parameter for the selected station.
    */
   getDataStation(dataForm: any): Observable<DataStationInterface[]> {
+    // Optional: add user authentication if needed
     // if (this.accessToken != null) {
     //   headers.Authorization = `Token ${this.accessToken}`;
     //   dataForm.user_id = this.auth.getUser().user_id;
     // }
-    const dir = this.urlBack + 'station_data_hourly/data';
+
+    const dir = this.urlBack + 'station_data_hourly/data_automatica';
     return this.http.post<DataStationInterface[]>(dir, dataForm, httpOptions);
   }
 
+  /**
+   * Retrieves hourly data from a conventional station.
+   * @param dataForm Object containing: id_estacion, table_names (nemónicos), and optional dates.
+   * @returns Observable with structured data for conventional measurements.
+   */
+  getDataStationConvencional(
+    dataForm: any
+  ): Observable<DataStationInterface[]> {
+    const endpoint = this.urlBack + 'station_data_hourly/data_convencional';
+    return this.http.post<DataStationInterface[]>(
+      endpoint,
+      dataForm,
+      httpOptions
+    );
+  }
+
+  /**
+   * Retrieves wind-specific data from an automatic station.
+   * @param dataForm Object containing: id_estacion, table_names (nemónicos), and optional dates.
+   * @returns Observable with structured wind data (direction, speed, gust).
+   */
   getWindDataStation(dataForm: any): Observable<DataStationInterface[]> {
+    // Optional: add user authentication if needed
     // if (this.accessToken != null) {
     //   headers.Authorization = `Token ${this.accessToken}`;
     //   dataForm.user_id = this.auth.getUser().user_id;
     // }
-    const dir = this.urlBack + 'station_data_hourly/data-wind';
 
+    const dir = this.urlBack + 'station_data_hourly/data-wind_automatica';
     return this.http.post<DataStationInterface[]>(dir, dataForm, httpOptions);
   }
 
@@ -92,7 +112,4 @@ export class StationService {
       `station_information/getParametrosByEstacion/${id_estacion}/`;
     return this.http.get<AgrupadoParametros[]>(url);
   }
-
-
-
 }
