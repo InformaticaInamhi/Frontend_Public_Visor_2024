@@ -31,7 +31,7 @@ export class MarkerService {
         markerData.codigo,
         markerData.id_estacion,
         markerData.id_categoria,
-        markerData.id_estado_estacion,
+        markerData.estado_transmision_real,
         zoom!
       );
       const overlay = new Overlay({
@@ -67,20 +67,22 @@ export class MarkerService {
       3: 'HM',
       4: 'R',
     };
+
     const colorMap: Record<number, string> = {
-      1: 'green',
-      2: 'yellow',
-      3: 'red',
-      4: 'blue',
+      1: 'green', // TRANSMITIENDO
+      3: 'red', // SIN TRANSMISIÓN
+      2: 'yellow', // EN MANTENIMIENTO
     };
 
     const letter = letterMap[id_category] || '';
-    const color = colorMap[id_status] || '';
+    const color = colorMap[id_status] || 'gray';
 
     const element = document.createElement('div');
-    markerStyles.backgroundColor = color;
 
-    Object.assign(element.style, markerStyles);
+    Object.assign(element.style, {
+      ...markerStyles,
+      backgroundColor: color,
+    });
 
     const circle = document.createElement('div');
     circle.innerText = letter;

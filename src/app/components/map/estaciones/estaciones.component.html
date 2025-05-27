@@ -1,20 +1,19 @@
 <div #mapContainer id="map" class="map">
   <!-- app filtro de estaciones -->
-  @if(isGraphVisible){
+  @if (isGraphVisible && infoStation) {
   <div class="graphData">
     <div class="container-button-close">
       <div class="station-code">
-        @if(infoStation?.codigo){
-        <!--  -->
-        Estación {{ infoStation.punto_obs }} -
-        {{ infoStation.codigo }}
-        }
+        <strong>Estación:</strong>
+        {{ infoStation.punto_obs }} ({{ infoStation.codigo }})
       </div>
+
       <button
         mat-mini-fab
         color="warn"
         (click)="isGraphVisible = false"
         class="btnX"
+        title="Cerrar"
       >
         X
       </button>
@@ -26,7 +25,6 @@
 
   <app-config-map
     (eventSendData)="reloadMarkersStation($event)"
-    [stationNetwork]="stationNetwork"
     class="configEstaciones"
     [hidden]="!isConfigMapVisible"
     (closeConfig)="isConfigMapVisible = false"

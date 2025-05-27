@@ -131,7 +131,7 @@ export class PrecipitationGraphService {
    */
   private generateGraphLayout(
     infoStation: Station,
-    selectedParameter: ParametrosStation
+    selectedParameter: any
   ) {
     return {
       title: {

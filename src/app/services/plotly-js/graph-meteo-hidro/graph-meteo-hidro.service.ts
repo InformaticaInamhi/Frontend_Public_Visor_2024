@@ -2,7 +2,10 @@ import { formatDate } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { weatherOpt } from '../../../components/graph/config-graph';
-import { DataStationInterface } from '../../../models/dataStation';
+import {
+  DataStationInterface,
+  ParamGroupedInterface,
+} from '../../../models/dataStation';
 import { Station } from '../../../models/station';
 import { configGraphic } from '../configPlotlyJs';
 
@@ -22,32 +25,24 @@ export class GraphMeteoHidroService {
 
   constructor() {}
 
-  renderChart(
-    infoStation: Station,
-    weatherOptions: weatherOpt,
-    dataStation: DataStationInterface[]
-  ) {
+  renderChart(infoStation: Station, dataParam: ParamGroupedInterface) {
+    const dataStation = dataParam.datos;
     const objetoConDatos = dataStation.find(
       (obj: any) => obj.data && obj.data.length > 0
     );
+
     let x0: any;
     let x1: any;
 
     if (objetoConDatos && objetoConDatos.data.length > 0) {
-      // Obtener la fecha inicial (x0)
       x0 = objetoConDatos.data[0].fecha.substr(0, 10);
-      // Convertir x0 a un objeto Date y restar un día
       let fechaInicial = new Date(x0);
       fechaInicial.setDate(fechaInicial.getDate() - 1);
-
-      // Convertir de nuevo la fecha a formato 'yyyy-mm-dd'
       x0 = fechaInicial.toISOString().substr(0, 10);
-
-      // Obtener la fecha final (x1)
       x1 = this.setXlimSup(objetoConDatos.data);
     }
 
-    var layout = {
+    const layout = {
       autosize: true,
       xaxis: {
         type: 'datetime',
@@ -78,16 +73,12 @@ export class GraphMeteoHidroService {
               step: 'hour',
               stepmode: 'backward',
             },
-            {
-              step: 'all',
-              label: 'Todo',
-            },
+            { step: 'all', label: 'Todo' },
           ],
         },
       },
-
       yaxis: {
-        title: `${weatherOptions.name} <br> ${weatherOptions.u_medida}`,
+        title: `${dataParam.name_param} <br> ${dataParam.u_medida}`,
         titlestandoff: 10,
         type: 'linear',
         tickcolor: '#474747',
@@ -96,35 +87,22 @@ export class GraphMeteoHidroService {
         linecolor: '#4a4a4a',
         automargin: true,
       },
-
-      //Objeto que contiene las opciones del titulo del gráfico
       title: {
-        text: `Estación ${infoStation.categoria} <b>${infoStation.punto_obs}</b> &nbsp;${infoStation.provincia}-${infoStation.canton}<br>Código: ${infoStation.codigo} lat: ${infoStation.latitud} long: ${infoStation.longitud}  Altura: ${infoStation.altutid} m s.n.m.`,
+        text: `Estación ${infoStation.categoria} <b>${infoStation.punto_obs}</b> &nbsp;${infoStation.provincia}-${infoStation.canton}<br>Código: ${infoStation.codigo} lat: ${infoStation.latitud} long: ${infoStation.longitud}  Altura: ${infoStation.altitud} m s.n.m.`,
         font: { size: 12 },
       },
-
-      showlegend: true, //mostrar legenda del gráfico
-      //Objeto que contiene las propiedades de la leyenda
+      showlegend: true,
       legend: {
         orientation: 'h',
         y: -0.2,
         x: 0.5,
         bordercolor: '#000000',
         borderwidth: 1,
-        font: {
-          size: 11,
-        },
+        font: { size: 11 },
         xanchor: 'center',
       },
-
-      margin: {
-        l: 60,
-        r: 30,
-      },
-      modebar: {
-        activecolor: '#1f5c89',
-      },
-
+      margin: { l: 60, r: 30 },
+      modebar: { activecolor: '#1f5c89' },
       annotations: [
         {
           xref: 'paper',
@@ -139,46 +117,46 @@ export class GraphMeteoHidroService {
       ],
     };
 
-    let dataMap = dataStation.map((d: DataStationInterface) => {
+    const dataMap = dataStation.map((d: DataStationInterface) => {
       let visible = 'true';
-      let nameParam = d.name;
+      let nameParam = d.estadistico;
       let modePlot = 'lines+markers';
-      let typePlot = weatherOptions.type_plot;
-      let hovertemplate: any =
-        '<b>%{data.name}: </b> %{y} ' +
-        weatherOptions.u_medida +
-        '<extra></extra>';
+      let typePlot = dataParam.type_graph;
+      let hovertemplate =
+        '<b>%{data.name}: </b> %{y} ' + dataParam.u_medida + '<extra></extra>';
       let text: any;
       let textfont = {};
 
       let dataX = [];
       let dataY = [];
-      if (d.name.toLowerCase().includes('viento')) {
-        modePlot = 'text';
-        textfont = {
-          family: 'Arial Unicode MS, sans-serif',
-          size: 20,
-          color: d.color,
-        };
-        text = d.data.map((a: any) => `${this.getArrow(a.valor_direccion)} `);
-        dataX = d.data.map((a: any) =>
-          this.convertUTCtoEcuador(a.fecha, infoStation.provincia)
-        );
-        dataY = d.data.map((a: any) => a.valor_velocidad);
-        hovertemplate = d.data.map(
-          (a: any) =>
-            `<b>%{data.name} Velocidad: </b>${a.valor_velocidad} m/s<br>` +
-            `<b>%{data.name} Dirección: </b>${this.getDirectionText(
-              a.valor_direccion
-            )}` +
-            '<extra></extra>'
-        );
-      } else {
+
+      // if (d.estadistico.toLowerCase().includes('viento')) {
+      //   modePlot = 'text';
+      //   textfont = {
+      //     family: 'Arial Unicode MS, sans-serif',
+      //     size: 20,
+      //     color: d.color,
+      //   };
+      //   text = d.data.map((a: any) => `${this.getArrow(a.valor_direccion)} `);
+      //   dataX = d.data.map((a: any) =>
+      //     this.convertUTCtoEcuador(a.fecha, infoStation.provincia)
+      //   );
+      //   dataY = d.data.map((a: any) => a.valor_velocidad);
+      //   hovertemplate = d.data.map(
+      //     (a: any) =>
+      //       `<b>%{data.name} Velocidad: </b>${a.valor_velocidad} m/s<br>` +
+      //       `<b>%{data.name} Dirección: </b>${this.getDirectionText(
+      //         a.valor_direccion
+      //       )}` +
+      //       '<extra></extra>'
+      //   );
+      // } else {
+
         dataX = d.data.map((a: { fecha: string }) =>
           this.convertUTCtoEcuador(a.fecha, infoStation.provincia)
         );
         dataY = d.data.map((a: { valor: number }) => a.valor);
-      }
+      
 
       return {
         x: dataX,
@@ -189,16 +167,13 @@ export class GraphMeteoHidroService {
         mode: modePlot,
         type: typePlot,
         connectgaps: false,
-        line: {
-          color: d.color,
-        },
-        marker: {
-          color: d.color,
-        },
+        line: { color: d.color },
+        marker: { color: d.color },
         hovertemplate: hovertemplate,
         visible: visible,
       };
     });
+
     Plotly.newPlot('dataStation', dataMap, layout, configGraphic);
   }
 

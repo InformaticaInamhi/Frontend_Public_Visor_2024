@@ -11,5 +11,19 @@ export interface ParametrosStation {
 
 export interface Agrupado {
   parametro: string;
-  nemonicos: string[];
+  detalles: {
+    nemonico: string;
+    unidad_medida: string;
+    unidad_medida_tiempo: string;
+    estadistico: string;
+  }[];
+}
+export interface AgrupadoParametros {
+  parametro: string;
+  detalles: {
+    nemonico: string;
+    unidad_medida: string;
+    unidad_medida_tiempo: string;
+    estadistico: string;
+  }[];
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   FormArray,
   FormBuilder,
@@ -6,16 +6,18 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import {
-  station_captor,
-  station_status,
-  type_station,
-} from './parameters-map';
+import { station_captor, station_status, type_station } from './parameters-map';
 
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import {
+  CaptorType,
+  StationCategory,
+  StationStatus,
+} from '../../../models/station';
+
 @Component({
   selector: 'app-config-map',
   templateUrl: './config-map.component.html',
@@ -44,23 +46,35 @@ export class ConfigMapComponent implements OnInit {
 
   ngOnInit(): void {
     this.FormConfigStation = this.fb.group({
+      station_network: [0],
       station_captor: new FormArray(
-        this.station_captor.map((item) => this.fb.control(item.value === 2))
+        this.station_captor.map((item) =>
+          this.fb.control(item.value === CaptorType.ELECTROMECANICO)
+        )
       ),
-      station_status: new FormArray(
-        this.station_status.map((item) => this.fb.control(item.value === 1))
-      ),
+station_status: new FormArray(
+  this.station_status.map((item) =>
+    this.fb.control(item.value === StationStatus.TRANSMITIENDO)
+  )
+),
       station_type: new FormArray(
         this.station_type.map((item) =>
-          this.fb.control([1, 2, 3].includes(item.value))
+          this.fb.control(
+            [
+              StationCategory.METEOROLOGICA,
+              StationCategory.HIDROLOGICA,
+              StationCategory.HIDROMETEOROLOGICA,
+            ].includes(item.value)
+          )
         )
       ),
       isCheckedGroup: [true],
     });
   }
 
-  changeItemFilter(): any {
+  changeItemFilter(): void {
     const configValues = this.FormConfigStation.value;
+
     const selectedCaptor = this.station_captor
       .filter((_, index) => configValues.station_captor[index])
       .map((item) => item.value);
@@ -73,13 +87,16 @@ export class ConfigMapComponent implements OnInit {
       .filter((_, index) => configValues.station_type[index])
       .map((item) => item.value);
 
-    this.eventSendData.emit({
-      ...configValues,
-      isCheckedGroup: configValues.isCheckedGroup,
+    const fullConfig = {
+      station_network: configValues.station_network,
       station_captor: selectedCaptor,
       station_status: selectedStatus,
       station_type: selectedType,
-    });
+      isCheckedGroup: configValues.isCheckedGroup,
+    };
+
+    console.log('[Filtro Emitido]', fullConfig);
+    this.eventSendData.emit(fullConfig);
   }
 }
 

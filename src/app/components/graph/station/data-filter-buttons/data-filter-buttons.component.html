@@ -1,0 +1,31 @@
+<div class="data-filter-buttons">
+  @if (idParametro === 17) { @if (botonesHabilitados['1d']) {
+  <button mat-button color="primary" (click)="applyFilter(1)">Último 1 día</button>
+  } @if (botonesHabilitados['2d']) {
+  <button mat-button color="accent" (click)="applyFilter(2)">Último 2 días</button>
+  } @if (botonesHabilitados['7d']) {
+  <button mat-button color="warn" (click)="applyFilter(7)">Último 7 días</button>
+  } @if (botonesHabilitados['10d']) {
+  <button mat-raised-button color="default" (click)="applyFilter(10)">
+    Último 10 días
+  </button>
+  } @if (botonesHabilitados['all']) {
+  <button mat-raised-button color="primary" (click)="applyFilter(0)">
+    Todo
+  </button>
+  } } @else { @if (botonesHabilitados['24h']) {
+  <button mat-button color="primary" (click)="applyFilter(24)">
+    Últimas 24h
+  </button>
+  } @if (botonesHabilitados['48h']) {
+  <button mat-button color="accent" (click)="applyFilter(48)">
+    Últimas 48h
+  </button>
+  } @if (botonesHabilitados['72h']) {
+  <button mat-button color="warn" (click)="applyFilter(72)">Últimas 72h</button>
+  } @if (botonesHabilitados['all']) {
+  <button mat-raised-button color="default" (click)="applyFilter(0)">
+    Todo
+  </button>
+  } }
+</div>

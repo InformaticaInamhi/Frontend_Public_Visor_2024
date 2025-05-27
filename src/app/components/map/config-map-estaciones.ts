@@ -1,3 +1,22 @@
+import {
+  CaptorType,
+  FormOptionsStations,
+  StationCategory,
+  StationStatus,
+} from '../../models/station';
+
+export const valuesFormConfigMap: FormOptionsStations = {
+  station_network: 0, // 0 = Todas las redes
+  station_captor: [CaptorType.ELECTROMECANICO],
+  station_status: [StationStatus.TRANSMITIENDO],
+  station_type: [
+    StationCategory.METEOROLOGICA,
+    StationCategory.HIDROLOGICA,
+    StationCategory.HIDROMETEOROLOGICA,
+  ],
+  isCheckedGroup: true,
+};
+
 export const opt_layers_radio = [
   { id: 1, name: 'Default', value: 'Default' },
   { id: 2, name: 'Outdoors', value: 'Outdoors' },
@@ -9,21 +28,6 @@ export const opt_layers_radio = [
 export type ol_radioConfig = {
   [key: string]: { id: number; name: string; value: string };
 };
-
-export const valuesFormConfigMap: FormOptionsStations = {
-  station_network: 0,
-  station_captor: [2],
-  station_status: [1],
-  station_type: [1, 2, 3],
-  isCheckedGroup: true,
-};
-export interface FormOptionsStations {
-  station_network: number;
-  station_captor: number[];
-  station_status: number[];
-  station_type: number[];
-  isCheckedGroup: boolean;
-}
 
 export const itemsLegendStations = [
   { description: 'Meteorológica', color: '', value: 'M' },

@@ -26,6 +26,8 @@ export class WindGraphService {
     infoStation: Station,
     selectedParameter: ParametrosStation
   ) {
+
+
     // 🔹 Filtrar datos de viento MIN y MAX
     const windMin = dataArray.find((series) => series.name.includes('MIN'));
     const windMax = dataArray.find((series) => series.name.includes('MAX'));
@@ -89,10 +91,7 @@ export class WindGraphService {
    * @param selectedParameter - Parámetro seleccionado en el gráfico.
    * @returns Layout personalizado para el gráfico.
    */
-  private generateGraphLayout(
-    infoStation: Station,
-    selectedParameter: ParametrosStation
-  ) {
+  private generateGraphLayout(infoStation: Station, selectedParameter: any) {
     return {
       title: {
         text: `Estación ${infoStation.categoria} <b>${infoStation.punto_obs}</b> &nbsp;${infoStation.provincia}-${infoStation.canton}<br>

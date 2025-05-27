@@ -14,7 +14,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import Control from 'ol/control/Control';
 
 // 📌 Modelos
-import { Station } from '../../../models/station';
+import { FormOptionsStations, Station } from '../../../models/station';
 
 // 📌 Servicios
 import { TitleService } from '../../../services/header/title.service';
@@ -25,19 +25,17 @@ import { SpinnerService } from '../../../services/spinner/spinner.service';
 import { FilterService } from '../../../services/stations/filter-stations/filter.service';
 import { StationService } from '../../../services/stations/station.service';
 
-
 // 📌 GeoJSON (Datos)
 import { hidros } from '../../../services/openlayer/geojson/hidro-geojson';
 
 // 📌 Componentes
 import { ConfigMapComponent } from '../../forms/config-map/config-map.component';
-import { MeteoHidroComponent } from '../../graph/stations/meteo-hidro/meteo-hidro.component';
+import { MeteoHidroComponent } from '../../graph/station/meteo-hidro/meteo-hidro.component';
 import { SearchMarkerComponent } from '../search-marker/search-marker.component';
 import { StationDescriptionComponent } from '../station-description/station-description.component';
 
 // 📌 Configuración y Utilidades
 import {
-  FormOptionsStations,
   logosInamhi,
   opt_layers_radio,
   valuesFormConfigMap,
@@ -77,8 +75,7 @@ export class EstacionesComponent implements AfterViewInit {
   }));
 
   selectedHydroFeatures: any[] = [];
-  infoStation: any = {};
-  stationNetwork: OwnerStation[] = [];
+  infoStation: Station | null = null;
 
   // Opciones de Visualización
   isDropdownVisible: boolean = false;
@@ -104,20 +101,23 @@ export class EstacionesComponent implements AfterViewInit {
     private stationService: StationService,
     private stationFilterService: FilterService,
     private loadingSpinnerService: SpinnerService,
-    private headerTitleService: TitleService,
-
+    private headerTitleService: TitleService
   ) {
     this.headerTitleService.changeTitle(
       'Visor de estaciones meteorológicas e hidrológicas'
     );
     this.mapMarkerService.getMarkerClickedEvent().subscribe((id_station) => {
-      this.stationService
-        .getMetadataStation(id_station)
-        .subscribe((metadata) => {
-          this.resetAllViews();
-          this.infoStation = metadata;
-          this.isGraphVisible = true;
-        });
+      const metadata = this.stationList.find(
+        (station) => station.id_estacion === id_station
+      );
+
+      if (metadata) {
+        this.resetAllViews();
+        this.infoStation = metadata;
+        this.isGraphVisible = true;
+      } else {
+        console.warn('No se encontró la estación con ID:', id_station);
+      }
     });
   }
 
@@ -135,9 +135,8 @@ export class EstacionesComponent implements AfterViewInit {
     this.addCustomControl();
 
     // 🔹 Obtiene la lista de estaciones y la carga en el mapa o en la interfaz
-    this.getstationList();
+    this.loadStationsByProvincia();
   }
-
 
   onChangeBaseLayer(layerName: string): void {
     this.mapLayerService.changeBaseLayer(layerName);
@@ -154,33 +153,20 @@ export class EstacionesComponent implements AfterViewInit {
   }
 
   /**
-   * Obtiene las estaciones del servicio y las agrega como marcadores en el mapa.
+   * Carga las estaciones según el ID de provincia y las coloca como marcadores en el mapa.
    */
-  getstationList() {
-    this.stationService.getAllStationsINAMHI().subscribe((data: Station[]) => {
-      setTimeout(() => {
-        this.loadingSpinnerService.show(false);
-      }, 0);
-      this.stationList = data;
-      this.stationNetwork = this.getOwnersstationList(data);
-      this.reloadMarkersStation(this.formOptions);
-    });
-  }
+  loadStationsByProvincia() {
+    const idProvincia = '17'; // Puedes hacerlo dinámico con this.formOptions.get('provincia')?.value
 
-  getOwnersstationList(stationListInfo: Station[]): OwnerStation[] {
-    let uniqueOwners: Map<number, OwnerStation> = new Map();
-    stationListInfo.forEach((item) => {
-      if (!uniqueOwners.has(item.id_propietario)) {
-        uniqueOwners.set(item.id_propietario, {
-          id_propietario: item.id_propietario,
-          propietario: item.propietario,
-        });
-      }
-    });
-
-    let filterOwners: OwnerStation[] = Array.from(uniqueOwners.values());
-    filterOwners.sort((a, b) => a.id_propietario - b.id_propietario);
-    return filterOwners;
+    this.stationService
+      .getStationsByProvincia(idProvincia)
+      .subscribe((data: Station[]) => {
+        setTimeout(() => {
+          this.loadingSpinnerService.show(false);
+        }, 0);
+        this.stationList = data;
+        this.reloadMarkersStation(this.formOptions);
+      });
   }
 
   reloadMarkersStation(configValues?: any) {

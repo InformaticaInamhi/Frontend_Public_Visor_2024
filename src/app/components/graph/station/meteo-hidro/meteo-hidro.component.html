@@ -1,0 +1,34 @@
+@if(parameters.length>0){
+<mat-card class="meteo-hidro-card">
+  <!-- Contenedor del Select -->
+  <div class="meteo-hidro-select">
+    <app-parameter-selector
+      [parameters]="parameters"
+      [infoStation]="infoStation"
+      (selectedParameter)="onParameterSelected($event)"
+    >
+    </app-parameter-selector>
+  </div>
+
+  @if(showButtons){
+  <!-- Botones para filtrar la data -->
+
+  <div class="meteo-hidro-buttons">
+    <app-data-filter-buttons
+      [allData]="allData"
+      [idParametro]="selectedParameter.id"
+      (filteredData)="onDataFiltered($event)"
+    ></app-data-filter-buttons>
+  </div>
+
+  }
+
+  <!-- Contenedor del gráfico o imagen -->
+  <div class="meteo-hidro-chart">
+    <div class="watermark">
+      {{ infoStation.codigo }} - {{ infoStation.punto_obs }}
+    </div>
+    <figure id="dataStationGeneral"></figure>
+  </div>
+</mat-card>
+}

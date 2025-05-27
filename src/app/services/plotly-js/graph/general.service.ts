@@ -25,24 +25,31 @@ export class GeneralService {
     dataArray: any[],
     divId: string,
     infoStation: Station,
-    selectedParameter: ParametrosStation
+    selectedParameter: any
   ) {
+
+    const isPrecipitacion = selectedParameter.id_parametro === 17;
+    // Unidad de medida desde detalles
+    const unidad = selectedParameter.detalles[0]?.unidad_medida || '';
+
     const traces = dataArray.map((series) => ({
-      x: series.data.map((d: any) => new Date(d.fecha)), // Asigna valores al eje X (fechas)
-      y: series.data.map((d: any) => d.valor), // Asigna valores al eje Y (datos)
-      type: 'scatter',
-      name: series.name, // Nombre de la serie de datos
-      line: { color: series.color }, // Color de la línea
-      mode: 'lines+markers', // Muestra líneas y puntos
-      marker: { size: 6 }, // Ajusta el tamaño de los puntos
-      hovertemplate: `<b>%{fullData.name}: </b> %{y} ${selectedParameter.unidad_medida}<extra></extra>`, // Muestra todas las series en hover
+      x: series.data.map((d: any) => new Date(d.fecha)),
+      y: series.data.map((d: any) => d.valor),
+      type: isPrecipitacion ? 'bar' : 'scatter',
+      name: `${selectedParameter.parametro} ${series.estadistico}`, // ej: TEMPERATURA DEL AIRE MIN
+      line: { color: series.color },
+      mode: 'lines+markers',
+      marker: { size: 4 },
+      hovertemplate: `<b>%{fullData.name}:</b> %{y:.2f} ${unidad}<extra></extra>`,
       connectgaps: false,
       visible: true,
     }));
 
-    // Se obtiene el layout personalizado con el título y configuraciones
-    const layout = this.generateGraphLayout(infoStation, selectedParameter);
-
+    const layout = this.generateGraphLayout(
+      infoStation,
+      selectedParameter,
+      unidad
+    );
     Plotly.react(divId, traces, layout, { scrollZoom: true });
   }
 
@@ -54,12 +61,13 @@ export class GeneralService {
    */
   private generateGraphLayout(
     infoStation: Station,
-    selectedParameter: ParametrosStation
+    selectedParameter: ParametrosStation,
+    unidad: string
   ) {
     return {
       title: {
         text: `Estación ${infoStation.categoria} <b>${infoStation.punto_obs}</b> &nbsp;${infoStation.provincia}-${infoStation.canton}<br>
-               Código: ${infoStation.codigo} | Lat: ${infoStation.latitud} | Long: ${infoStation.longitud} | Altura: ${infoStation.altitud} m s.n.m.`,
+             Código: ${infoStation.codigo} | Lat: ${infoStation.latitud} | Long: ${infoStation.longitud} | Altura: ${infoStation.altitud} m s.n.m.`,
         font: { size: 12 },
       },
       showlegend: true,
@@ -84,27 +92,20 @@ export class GeneralService {
       },
       yaxis: {
         title: {
-          text: `${selectedParameter.nombre} (${selectedParameter.unidad_medida})`,
+          text: `${selectedParameter.parametro} (${unidad})`,
           font: { size: 14 },
           standoff: 20,
         },
         automargin: true,
       },
       autosize: true,
-
       margin: { l: 80, r: 50, t: 90, b: 100 },
-
-      // 🔹 Activa el hover para mostrar todas las series al mismo tiempo
       hovermode: 'x unified',
-
-      // 🔹 Estiliza los tooltips para mejorar la visualización
       hoverlabel: {
-        bgcolor: 'rgba(255,255,255,0.8)', // Fondo semi-transparente
-        bordercolor: 'black', // Borde negro
-        font: { size: 12, color: 'black' }, // Fuente legible
+        bgcolor: 'rgba(255,255,255,0.9)',
+        bordercolor: 'black',
+        font: { size: 12, color: 'black' },
       },
-
-      // Fondo del gráfico y borde negro interno
       paper_bgcolor: 'white',
       plot_bgcolor: 'white',
       shapes: [
@@ -117,7 +118,7 @@ export class GeneralService {
           xref: 'paper',
           yref: 'paper',
           line: {
-            color: 'black', // Borde negro alrededor del gráfico
+            color: 'black',
             width: 1,
           },
         },

@@ -2,8 +2,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { DataStationInterface } from '../../models/dataStation';
-import { ParametrosStation } from '../../models/parameterStation';
+import {
+  DataStationInterface,
+  ParamGroupedInterface,
+} from '../../models/dataStation';
+import {
+  AgrupadoParametros,
+  ParametrosStation,
+} from '../../models/parameterStation';
 import { Station } from '../../models/station';
 
 const httpOptions = {
@@ -47,13 +53,6 @@ export class StationService {
     return this.http.get<Station>(url);
   }
 
-  getParameterStation(id_estacion: number): Observable<ParametrosStation[]> {
-    const url =
-      this.urlBack +
-      `station_information/estacion-parametros-gen/${id_estacion}/hour/`;
-    return this.http.get<ParametrosStation[]>(url);
-  }
-
   /**
    * function that returns the data recorded by the station
    * @param objects catenomb, idStation,start_date, end_date
@@ -69,7 +68,6 @@ export class StationService {
     //   dataForm.user_id = this.auth.getUser().user_id;
     // }
     const dir = this.urlBack + 'station_data_hourly/data';
-
     return this.http.post<DataStationInterface[]>(dir, dataForm, httpOptions);
   }
 
@@ -82,4 +80,19 @@ export class StationService {
 
     return this.http.post<DataStationInterface[]>(dir, dataForm, httpOptions);
   }
+
+  getStationsByProvincia(idProvincia: string): Observable<Station[]> {
+    const url = `${this.urlBack}station_information/getStationsByProvincia/?id_provincia=${idProvincia}`;
+    return this.http.get<Station[]>(url, httpOptions);
+  }
+
+  getParameterStation(id_estacion: number): Observable<AgrupadoParametros[]> {
+    const url =
+      this.urlBack +
+      `station_information/getParametrosByEstacion/${id_estacion}/`;
+    return this.http.get<AgrupadoParametros[]>(url);
+  }
+
+
+
 }

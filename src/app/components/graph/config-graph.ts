@@ -3,7 +3,7 @@
 export const weatherParameters: weatherOpt[] = [
   {
     id: 1,
-    name: 'Precipitación',
+    name: 'Precipitación acumulada<br>Horaria-Diaria',
     u_medida: 'mm',
     type_plot: 'bar',
     name_param: 'PRECIPITACION',
@@ -212,6 +212,26 @@ export const weatherParameters: weatherOpt[] = [
     type_plot: 'scatter',
     name_param: 'RECORRIDO DEL VIENTO',
   },
+
+  //NUEVOS PARAMETROS
+
+  {
+    id: 28,
+    name: 'Temperatura del suelo a -10cm (cesped)',
+    u_medida: '°C',
+    type_plot: 'scatter',
+    name_param: 'TEMPERATURA DEL SUELO A -10CM (CESPED) MIN',
+  },
+
+  {
+    id: 29,
+    name: 'Temperatura del suelo a -20cm (cesped)',
+    u_medida: '°C',
+    type_plot: 'scatter',
+    name_param: 'TEMPERATURA DEL SUELO A -20CM (CESPED) PROM',
+  },
+
+  //antiguos
 
   {
     id: 90,
