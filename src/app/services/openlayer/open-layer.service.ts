@@ -173,7 +173,7 @@ export class OpenLayerService {
               }),
               text: new Text({
                 text: 'PICHINCHA',
-                font: 'bold 18px Arial',
+                font: 'bold 30px Arial',
                 fill: new Fill({ color: '#000000' }), // Negro
                 stroke: new Stroke({ color: '#FFFFFF', width: 2 }), // Borde blanco para contraste
                 textAlign: 'center',
