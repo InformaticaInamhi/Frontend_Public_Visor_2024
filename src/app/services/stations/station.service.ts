@@ -49,7 +49,7 @@ export class StationService {
   getMetadataStation(id_estacion: number): Observable<Station> {
     const url =
       this.urlBack +
-      `station_information/getStationbyId_station/${id_estacion}`;
+      `station_information/getStationByIdEstacion/${id_estacion}`;
     return this.http.get<Station>(url);
   }
 
