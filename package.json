@@ -1,13 +1,13 @@
 {
-  "name": "visor-hidrometeorologico",
-  "version": "0.0.0",
+  "name": "visor-clima",
+  "version": "2.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:visor_hidrometeorologico": "node dist/visor_hidrometeorologico/server/server.mjs"
+    "serve:ssr:visor_clima": "node dist/visor_clima/server/server.mjs"
   },
   "private": true,
   "dependencies": {
