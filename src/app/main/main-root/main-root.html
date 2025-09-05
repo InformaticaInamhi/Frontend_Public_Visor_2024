@@ -1,0 +1,72 @@
+<div class="main-container">
+  <!-- Menú lateral SIEMPRE visible pero animado -->
+  <!-- <aside class="side-menu" [class.closed]="!isMenuOpen">
+    <button mat-icon-button class="menu-toggle-btn" (click)="toggleMenu()">
+      <mat-icon>{{ isMenuOpen ? 'chevron_left' : 'menu' }}</mat-icon>
+    </button>
+
+    @if (isMenuOpen) {
+    <app-side-menu [isMenuOpen]="isMenuOpen" (toggleRequested)="toggleMenu()" />
+    }
+  </aside> -->
+
+  <!-- Contenido principal -->
+  <main class="main-content">
+    <header class="main-layout-header">
+      <!-- @if (!isMenuOpen) {
+      <button
+        mat-icon-button
+        class="menu-toggle-fab"
+        (click)="toggleMenu()"
+        aria-label="Abrir menú"
+        matTooltip="Abrir menú"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+      } -->
+
+      <!-- logo INAMHI -->
+      <a class="inamhi-logo" target="_blank" rel="noopener" aria-label="INAMHI">
+        <img src="/assets/icons/inamhi-logo.png" alt="INAMHI" />
+      </a>
+
+      <!-- FAB móvil para abrir/cerrar -->
+      <button
+        mat-icon-button
+        class="forecast-collapse-fab"
+        (click)="isForecastCollapsed = !isForecastCollapsed"
+        [attr.aria-expanded]="!isForecastCollapsed"
+        aria-label="Mostrar/ocultar pronóstico"
+      >
+        <mat-icon
+          >{{ isForecastCollapsed ? 'expand_more' : 'expand_less' }}</mat-icon
+        >
+      </button>
+
+      <!-- Renderiza el panel solo si NO está colapsado -->
+      @if (!isForecastCollapsed) {
+      <app-forecast-panel class="header-forecast" />
+      }
+      <!-- <app-header-title /> -->
+    </header>
+
+    <!-- <section class="main-layout-messages">
+      <app-message-bar />
+    </section> -->
+
+    <section class="main-layout-maparea">
+      <!-- Spinner overlay global -->
+      <app-spinner />
+      <app-content-map (showStationPanel)="onShowPanel($event)" />
+
+      @if(panelVisible){
+      <app-station-data-panel
+        class="floating-panel center-top-panel"
+        [stationInformation]="stationInfo"
+        [parametros]="parametrosEstacion"
+        (cerrarPanel)="panelVisible = false"
+      />
+      }
+    </section>
+  </main>
+</div>

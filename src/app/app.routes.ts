@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './components/login/login.component';
-import { EstacionesComponent } from './components/map/estaciones/estaciones.component';
-import { GuiasVisorComponent } from './components/basic/guias-visor/guias-visor.component';
+import { MainRoot } from './main/main-root/main-root';
+import { ForecastPanel } from './forecast/components/forecast-panel/forecast-panel';
 
 export const routes: Routes = [
-  { path: '', component: EstacionesComponent, title: 'Visor de Estaciones' },
-  { path: 'login', component: LoginComponent, title: 'Login' },
-  { path: 'repositorio', component: GuiasVisorComponent, title: 'Repositorio' },
+  { path: 'visor', component: MainRoot },
+  { path: 'forecast', component: ForecastPanel }, // nueva ruta agregada
+  { path: '', redirectTo: 'visor', pathMatch: 'full' },
+  { path: '**', redirectTo: 'visor' },
 ];

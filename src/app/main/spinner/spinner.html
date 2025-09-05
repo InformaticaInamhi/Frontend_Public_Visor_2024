@@ -1,0 +1,26 @@
+@let visible = spinnerService.spinnerVisible$ | async;
+
+@if (visible) {
+  <div class="spinner-backdrop">
+    <div class="SpinnerHighcharts">
+      <div class="waviy">
+        <span style="--i: 1">c</span>
+        <span style="--i: 2">a</span>
+        <span style="--i: 3">r</span>
+        <span style="--i: 4">g</span>
+        <span style="--i: 5">a</span>
+        <span style="--i: 6">n</span>
+        <span style="--i: 7">d</span>
+        <span style="--i: 8">o</span>
+      </div>
+      <div>
+        <mat-progress-spinner
+          class="spinnerHighcharts"
+          mode="indeterminate"
+          diameter="300"
+          color="primary"
+        ></mat-progress-spinner>
+      </div>
+    </div>
+  </div>
+}

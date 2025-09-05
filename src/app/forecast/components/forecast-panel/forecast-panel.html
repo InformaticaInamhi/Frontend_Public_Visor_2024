@@ -1,0 +1,89 @@
+<div
+  class="banner"
+  (mouseenter)="pauseAutoAdvance()"
+  (mouseleave)="resumeAutoAdvance()"
+>
+  <button
+    mat-icon-button
+    class="nav-button"
+    (click)="previousForecast()"
+    aria-label="Anterior"
+  >
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+
+  @if (currentForecast) {
+  <div class="banner-content" [@fadeUp]="currentIndex">
+    <div class="info-row">
+      <span class="date" matTooltip="Fecha del pronóstico">
+        <mat-icon inline>calendar_today</mat-icon> Pronóstico para el
+        <strong>{{ currentForecast.date }}</strong>
+      </span>
+      <span class="province" matTooltip="Provincia">
+        <mat-icon inline>map</mat-icon> Provincia:
+        <strong>{{ currentForecast.fk_province_name }}</strong>
+      </span>
+      <span class="location" matTooltip="Nombre de la localidad">
+        <mat-icon inline>location_on</mat-icon> Ubicación:
+        <strong>{{ currentForecast.locality_name }}</strong>
+      </span>
+    </div>
+
+    <div class="temp-uv">
+      <span matTooltip="Temperatura mínima esperada">
+        <mat-icon inline>ac_unit</mat-icon> Mín:
+        <strong>{{ currentForecast.min_temperature }} °C</strong>
+      </span>
+      <span matTooltip="Temperatura máxima esperada">
+        <mat-icon inline color="warn">whatshot</mat-icon> Máx:
+        <strong>{{ currentForecast.max_temperature }} °C</strong>
+      </span>
+      <span class="uv-container" [matTooltip]="uvTooltip">
+        <mat-icon inline color="accent">show_chart</mat-icon> Índice radiación
+        UV:
+        <div class="uv-bar" [ngClass]="getUvClass()">
+          <div
+            class="uv-level"
+            [style.width.%]="(currentForecast.uv_radiation || 0) * 10"
+          ></div>
+        </div>
+        <strong>{{ currentForecast.uv_radiation }}</strong>
+      </span>
+    </div>
+
+    <div class="icons">
+      @for (period of currentForecast.forecast; track period) {
+      <div class="icon-period">
+        <img
+          [src]="period.condition_icon_url"
+          [alt]="period.condition_name"
+          matTooltip="{{ period.condition_description }}"
+          matTooltipPosition="above"
+        />
+        <span>{{ period.period_name }}</span>
+      </div>
+      }
+    </div>
+
+    <!-- Boton para abrir el visor de pronosticos -->
+    <button
+      class="open-visor"
+      mat-stroked-button
+      color="primary"
+      (click)="openForecastLink()"
+    >
+      <mat-icon>open_in_new</mat-icon>
+      Ver visor de pronósticos
+    </button>
+  </div>
+  }
+
+  <button
+    mat-icon-button
+    class="nav-button"
+    (click)="nextForecast()"
+    aria-label="Siguiente"
+  >
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+</div>

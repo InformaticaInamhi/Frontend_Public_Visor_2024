@@ -1,0 +1,133 @@
+<div class="station-chart__container">
+  <!-- Configuración de parámetros -->
+  <div class="station-chart__config-box">
+    <div class="station-chart__config-header">
+      <div class="station-chart__config-title">Seleccionar parámetros</div>
+    </div>
+
+    <div class="station-chart__config-row">
+      <!-- Selector múltiple de parámetros -->
+      <mat-form-field appearance="outline" class="station-chart__param-select">
+        <mat-label>Parámetros</mat-label>
+        <mat-select
+          [(value)]="selectedParams"
+          multiple
+          (selectionChange)="onParamsChange()"
+        >
+          <mat-option disabled [value]="null">
+            Seleccione uno o más parámetros
+          </mat-option>
+          @for (p of parametros; track p) {
+          <mat-option [value]="p">{{ p.name_param }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Botones -->
+      <button mat-raised-button color="primary" (click)="graficarCombinada()">
+        Graficar
+      </button>
+      <button mat-raised-button color="accent">Descargar CSV</button>
+    </div>
+  </div>
+
+  <!-- Estilo por parámetro -->
+  @if (selectedParams.length > 0 && showPanel) {
+  <div class="station-chart__style-box">
+    <div class="station-chart__style-header">
+      <div class="station-chart__style-title">Estilo por parámetro</div>
+      <button
+        mat-icon-button
+        (click)="toggleGridVisible()"
+        aria-label="Mostrar/Ocultar estilo"
+      >
+        <mat-icon>
+          @if (GridVisible) { expand_less } @else { expand_more }
+        </mat-icon>
+      </button>
+    </div>
+
+    @if (GridVisible) {
+    <div class="station-chart__style-grid">
+      @for (param of selectedParams; track param.name_param) {
+      <div class="station-chart__style-item">
+        <div class="station-chart__style-param-name">
+          {{ param.name_param }} ({{ param.simbolo_unidad }})
+        </div>
+
+        <select
+          class="station-chart__trace-select"
+          [(ngModel)]="selectedTraceTypesPerParam[param.name_param]"
+          (ngModelChange)="onTraceTypePerParamChange()"
+        >
+          @for (tipo of traceTypes; track tipo.value) {
+          <option [value]="tipo.value">{{ tipo.label }}</option>
+          }
+        </select>
+
+        <div class="station-chart__style-estadisticos">
+          @for (est of param.params; track est.nemonico) {
+          <label class="estadistico-pill">
+            <input
+              type="checkbox"
+              class="pill-toggle"
+              [(ngModel)]="activeSeriesByNemonico[est.nemonico]"
+              (ngModelChange)="toggleSeries(est.nemonico, $event)"
+              [attr.aria-label]="'Activar/Desactivar ' + est.simbolo_estadistico"
+            />
+
+            <input
+              type="color"
+              class="pill-color-picker"
+              [ngModel]="getSerieColor(est.nemonico)"
+              (ngModelChange)="onColorChange(est.nemonico, $event)"
+              title="Cambiar color"
+            />
+
+            <span class="pill-label"> {{ est.simbolo_estadistico }} </span>
+          </label>
+          }
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+  }
+
+  <!-- Contenedor del gráfico y slider -->
+  <div class="station-chart__plot-section">
+    <!-- Slider vertical con título y control separados -->
+    @if (combinedSeries.length>0) {
+    <div class="station-chart__slider-container">
+      <!-- Título rotado -->
+      <div class="station-chart__slider-title-box">
+        <div class="station-chart__slider-title">AJUSTAR TIEMPO</div>
+      </div>
+
+      <!-- Slider -->
+
+      <div class="station-chart__slider-box">
+        <input
+          type="range"
+          min="1"
+          max="100"
+          [(ngModel)]="sliderValue"
+          (input)="onSliderChange()"
+          class="station-chart__slider"
+          orient="vertical"
+        />
+      </div>
+    </div>
+    }
+
+    <!-- Gráfico Plotly -->
+    <div class="station-chart__plot-container">
+      <div
+        #chartContainer
+        id="plotly-container"
+        style="width: 100%; height: 100%"
+      ></div>
+    </div>
+  </div>
+</div>

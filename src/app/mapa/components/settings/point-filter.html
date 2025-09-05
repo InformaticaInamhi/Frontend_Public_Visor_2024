@@ -1,0 +1,18 @@
+<div class="config-panel">
+  <h3>Tipo de medición</h3>
+
+  @if (captorOptions().length > 0) {
+    @for (option of captorOptions(); track option.type) {
+      <label>
+        <input
+          type="checkbox"
+          [checked]="isChecked(option.type)"
+          (change)="onCheckboxChange($event, option.type)"
+        />
+        {{ option.label }}
+      </label>
+    }
+  } @else {
+    <p>No hay tipos disponibles.</p>
+  }
+</div>

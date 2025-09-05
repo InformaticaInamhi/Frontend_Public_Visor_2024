@@ -1,0 +1,79 @@
+.main-layout-maparea {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+app-mapa-main {
+  flex: 1;
+  display: block;
+}
+
+.top-right-settings {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2000;
+
+  button {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    padding: 0.5rem;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  mat-icon {
+    font-size: 24px;
+    color: #333;
+  }
+}
+
+.bottom-right-search {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 2000;
+  background: #1976d2;
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+}
+
+.bottom-right-search:hover {
+  background: #1565c0;
+}
+
+.floating-panel {
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.75rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+
+.top-right-panel {
+  position: absolute;
+  top: 4rem;
+  right: 1rem;
+  z-index: 1999;
+}
+
+.bottom-right-panel {
+  position: fixed;
+  bottom: 4.5rem; // Se eleva sobre el botón de lupa
+  right: 1rem;
+  z-index: 2000;
+}
