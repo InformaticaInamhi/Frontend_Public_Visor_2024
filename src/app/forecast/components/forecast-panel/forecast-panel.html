@@ -52,7 +52,7 @@
     </div>
 
     <div class="icons">
-      @for (period of currentForecast.forecast; track period) {
+      @for (period of currentForecast.forecast; track period.period_name) {
       <div class="icon-period">
         <img
           [src]="period.condition_icon_url"

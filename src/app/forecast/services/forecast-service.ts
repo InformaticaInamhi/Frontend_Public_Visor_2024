@@ -27,6 +27,11 @@ export class ForecastService {
   }
 
   private getFromCache(): DailyForecast[] | null {
+    // ✅ Solo usar localStorage si existe (navegador)
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return null;
+    }
+
     const raw = localStorage.getItem(this.CACHE_KEY);
     if (!raw) return null;
 
@@ -46,6 +51,11 @@ export class ForecastService {
   }
 
   private saveToCache(data: DailyForecast[]): void {
+    // ✅ Solo usar localStorage si existe (navegador)
+    if (typeof window === 'undefined' || typeof localStorage === 'undefined') {
+      return;
+    }
+
     const payload = {
       data,
       timestamp: Date.now(),

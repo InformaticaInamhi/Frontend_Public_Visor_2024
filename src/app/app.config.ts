@@ -9,7 +9,7 @@ import {
   withEventReplay,
 } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations'; // ✅ Importar animaciones
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http'; // 👈 Importar withFetch
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -19,6 +19,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
     provideAnimations(),
-    provideHttpClient(),
+    provideHttpClient(withFetch()), // 👈 Activar fetch
   ],
 };

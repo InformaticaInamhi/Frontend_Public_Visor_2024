@@ -1,46 +1,90 @@
-# Visor Hidrológico Meteorológico
+# 🌧️ Visor Hidro-Meteorológico
 
-## Descripción
-El Visor Hidrológico Meteorológico es un repositorio de código abierto enfocado en el frontend, diseñado para mejorar la visualización y análisis de la información de las estaciones automáticas de la red nacional de estaciones del Instituto Nacional de Meteorología e Hidrología (INAMHI), incluyendo la red de estaciones convencionales y otras redes asociadas como FONAG y SAICA. Este proyecto facilita el acceso y la interpretación de datos meteorológicos e hidrológicos para apoyar la toma de decisiones.
+**Visor Hidro-Meteorológico** es una aplicación web desarrollada en Angular 20 que permite visualizar estaciones meteorológicas e hidrológicas georreferenciadas sobre un mapa interactivo, utilizando la biblioteca **OpenLayers**.
 
-## Características Principales
-- **Interfaz de Usuario Avanzada**: Desarrollado con TypeScript y Angular 17, utilizando Angular Material para ofrecer una experiencia de usuario intuitiva y atractiva.
-- **Visualización de Mapas Mejorada**: Integra la tecnología de OpenLayers para el renderizado de mapas interactivos, proporcionando detalles precisos de la información hidrológica y meteorológica.
+Consume una API REST que proporciona información de estaciones, incluyendo ubicación, tipo de sensor, estado de transmisión, categoría y propietario.
 
-## Instalación
-Para instalar y configurar el entorno localmente, sigue estos pasos:
+---
 
-1. Clona el repositorio:
-   ```bash
-   git clone https://github.com/KevinChangoluisa/visor-hidrometeorologico
-   ```
+## 📍 ¿Qué hace esta aplicación?
 
-2. Instala las dependencias necesarias:
-   ```bash
-   npm install
-   ```
+- Muestra marcadores puntuales en el mapa según `latitud` y `longitud`.
+- Visualiza atributos clave como tipo de captor, estado de transmisión, y categoría.
+- Permite interacción con los marcadores para obtener más información.
+- Utiliza **OpenLayers** como motor GIS para la visualización geográfica.
 
-3. Crea las variables de entorno con la siguiente estructura en el archivo `src/environments/environment.ts`:
-   ```typescript
-   export const environment = {
-     production: false,
-     urlBack: 'https://urback/',
-     mapboxAccessToken: 'access_token',
-   };
-   ```
+---
 
-4. Ejecuta el servidor de desarrollo:
-   ```bash
-   ng serve
-   ```
+## 🛰️ Ejemplo de objeto recibido por la API REST
 
-5. Abre [http://localhost:4200/](http://localhost:4200/) en tu navegador para ver la aplicación en funcionamiento.
+```json
+{
+  "id_estacion": 62526,
+  "codigo": "M0124",
+  "latitud": "-0.916389",
+  "longitud": "-79.245556",
+  "altitud": "215.00",
+  "id_categoria": 1,
+  "categoria": "METEOROLOGICA",
+}
+````
 
-## Uso
-Utiliza la interfaz para navegar y explorar los diversos módulos de visualización. Los datos se presentan de forma interactiva y detallada, facilitando el análisis y la comprensión de la información meteorológica e hidrológica.
+---
 
-## Contribución
-Si estás interesado en contribuir al proyecto, por favor revisa las directrices de contribución en `CONTRIBUTING.md`.
+## ⚙️ Tecnologías utilizadas
 
-## Licencia
-Este proyecto está bajo la licencia MIT. Puedes consultar el archivo `LICENSE` para más detalles.
+* [Angular 20](https://angular.dev/)
+* [OpenLayers](https://openlayers.org/) (visualización geoespacial)
+* SCSS para estilos
+* API REST (backend externo, no incluido en este repositorio)
+
+---
+
+## 🚀 Cómo iniciar la aplicación
+
+```bash
+ng serve
+```
+
+Luego accede a: [http://localhost:4200](http://localhost:4200)
+
+---
+
+## 🧱 Estructura del proyecto
+
+* `src/app/mapa/` → Componente principal del visor
+* `src/app/services/` → Servicios para consumir la API
+* `src/app/models/` → Interfaces de tipado (`PointObservationModel`, etc.)
+* `OpenLayersMapService` → Servicio que encapsula la lógica del mapa
+
+---
+
+## 🧪 Testing
+
+```bash
+ng test        # pruebas unitarias
+ng e2e         # pruebas end-to-end (si se configuró)
+```
+
+---
+
+## 📚 Recursos adicionales
+
+* [Documentación OpenLayers](https://openlayers.org/en/latest/doc/)
+* [Documentación Angular CLI](https://angular.dev/tools/cli)
+* [Guía de TypeScript](https://www.typescriptlang.org/docs/)
+
+---
+
+
+## 👤 Autor
+
+**Kevin Changoluisa**
+GitHub: [@KevinChangoluisa](https://github.com/KevinChangoluisa)
+
+## 📝 Licencia
+
+Este proyecto está licenciado bajo los términos de la licencia MIT.  
+Puedes usarlo, modificarlo y redistribuirlo, **siempre que mantengas la atribución al autor original**:
+
+**Kevin Changoluisa** – [github.com/KevinChangoluisa](https://github.com/KevinChangoluisa)
