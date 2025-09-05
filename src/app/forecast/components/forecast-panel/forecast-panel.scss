@@ -1,0 +1,298 @@
+/* ===== Desktop (queda igual) ===== */
+.banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  padding: 0 52px; /* espacio para botones flotantes */
+  gap: 0.75rem;
+  min-height: 60px;
+}
+
+/* Botones prev/next superpuestos (no consumen ancho) */
+.banner > .nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  border: 1.5px solid #fff;
+  border-radius: 50%;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  mat-icon {
+    font-size: 20px;
+  }
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+.banner > .nav-button:first-child {
+  left: 8px;
+}
+.banner > .nav-button:last-child {
+  right: 8px;
+}
+
+/* Contenido (desktop) */
+.banner-content {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto; /* info | temp-uv | icons | visor */
+  grid-template-areas: "info temp icons visor";
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  width: 100%;
+}
+
+.banner-content .info-row {
+  grid-area: info;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.banner-content .temp-uv {
+  grid-area: temp;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.banner-content .icons {
+  grid-area: icons;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+.banner-content .open-visor {
+  grid-area: visor;
+}
+
+.info-row mat-icon {
+  vertical-align: middle;
+  margin-right: 0.2rem;
+}
+.info-row strong {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: clamp(110px, 14vw, 180px);
+}
+
+.uv-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.uv-bar {
+  width: 70px;
+  height: 6px;
+  border-radius: 4px;
+  background: #ccc;
+  overflow: hidden;
+}
+.uv-level {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+.uv-bar.uv-low .uv-level {
+  background: #6dbb1a;
+}
+.uv-bar.uv-moderate .uv-level {
+  background: #fcd303;
+}
+.uv-bar.uv-high .uv-level {
+  background: #f79201;
+}
+.uv-bar.uv-very-high .uv-level {
+  background: #e31837;
+}
+
+.icons .icon-period {
+  text-align: center;
+  font-size: 0.7rem;
+}
+.icons img {
+  width: 40px;
+  height: 35px;
+  display: block;
+  margin: 0 auto;
+}
+.icons span {
+  display: block;
+  margin-top: 1px;
+  white-space: nowrap;
+}
+
+.open-visor {
+  align-self: center;
+  justify-self: end;
+  height: 32px;
+  line-height: 32px;
+  padding: 0 0.85rem;
+  border-radius: 999px;
+  border: 1.5px solid #fff;
+  background: transparent;
+  color: #fff;
+  font-weight: 600;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  box-shadow: none;
+  text-transform: none;
+  mat-icon {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+  }
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+/* ===== MÓVIL: columnas (≤ 768px) ===== */
+@media (max-width: 768px) {
+  .banner {
+    padding: 6px 44px;
+    gap: 6px;
+    min-height: unset;
+  }
+  .banner > .nav-button {
+    width: 34px;
+    height: 34px;
+  }
+  .banner > .nav-button mat-icon {
+    font-size: 18px;
+  }
+
+  .banner-content {
+    /* 1 columna, filas en orden: info → métricas → iconos → visor */
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "info"
+      "metrics"
+      "icons"
+      "visor";
+    row-gap: 6px;
+    column-gap: 0;
+  }
+
+  /* Fila 1: fecha + localidad (ocultamos provincia para simplificar) */
+  .banner-content .info-row {
+    grid-area: info;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+  }
+  .banner-content .info-row .province {
+    display: none;
+  } /* ← fecha + localidad */
+  .banner-content .info-row .date,
+  .banner-content .info-row .location {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+  }
+  .banner-content .info-row strong {
+    max-width: 100%;
+  } /* deja envolver si hace falta */
+
+  /* Fila 2: métricas (mín, máx, UV en línea) */
+  .banner-content .temp-uv {
+    grid-area: metrics;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  /* compactar UV: icono + barra + valor (sin texto largo) */
+  .banner-content .temp-uv .uv-container {
+    gap: 0.35rem;
+  }
+  .banner-content .temp-uv .uv-container::before {
+    content: "UV";
+    font-weight: 600;
+    margin-right: 2px;
+  }
+  .banner-content .temp-uv .uv-bar {
+    width: 96px;
+  }
+
+  /* Fila 3: iconos del pronóstico */
+  .banner-content .icons {
+    grid-area: icons;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .banner-content .icons img {
+    width: 34px;
+    height: 30px;
+  }
+  .banner-content .icons .icon-period span {
+    font-size: 0.68rem;
+  }
+
+  /* Fila 4: botón visor a ancho completo */
+  .banner-content .open-visor {
+    grid-area: visor;
+    justify-self: stretch;
+    width: 100%;
+    height: 36px;
+    line-height: 36px;
+    justify-content: center;
+  }
+}
+
+/* ===== XS: muy angosto (≤ 480px) ===== */
+@media (max-width: 480px) {
+  .banner {
+    padding: 6px 40px;
+    gap: 4px;
+  }
+  .banner > .nav-button {
+    width: 30px;
+    height: 30px;
+  }
+
+  .banner-content {
+    row-gap: 4px;
+  }
+
+  .banner-content .temp-uv {
+    gap: 8px;
+  }
+  .banner-content .temp-uv .uv-bar {
+    width: 80px;
+  }
+
+  .banner-content .icons {
+    gap: 8px;
+  }
+  .banner-content .icons img {
+    width: 30px;
+    height: 26px;
+  }
+  .banner-content .icons .icon-period span {
+    font-size: 0.62rem;
+  }
+
+  .banner-content .open-visor {
+    height: 32px;
+    line-height: 32px;
+  }
+}
+
+/* A11y: reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .banner .banner-content {
+    transition: none !important;
+  }
+}

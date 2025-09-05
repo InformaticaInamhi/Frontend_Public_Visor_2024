@@ -1,0 +1,442 @@
+/* =========================================================
+   LAYOUT PRINCIPAL
+   ========================================================= */
+.main-container {
+  display: flex; /* side-menu (izq) + main-content (der) */
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden; /* evita scrolls laterales por animaciones */
+}
+
+/* =========================================================
+   MENÚ LATERAL (animado con gradiente)
+   ========================================================= */
+.side-menu {
+  width: 250px; /* ancho base en desktop */
+  height: 100vh;
+  background: linear-gradient(110deg, #174ea6 0%, #1e88e5 38%, #0aa67f 90%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  transition: width 0.3s ease, opacity 0.3s ease;
+
+  /* Estado cerrado en desktop: colapsa y oculta */
+  &.closed {
+    width: 0px;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0; /* evita residuos visuales */
+  }
+
+  .menu-toggle-btn {
+    color: #fff;
+    margin-bottom: 1rem;
+    z-index: 2;
+  }
+}
+
+/* =========================================================
+   BOTÓN HAMBURGUESA (siempre visible y destacado)
+   ========================================================= */
+.menu-toggle-fab {
+  margin-left: 1rem;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Azul → Teal (línea cromática INAMHI) */
+  background: linear-gradient(135deg, #1e88e5 0%, #0aa67f 100%);
+
+  /* Resalte sutil (sombra + ring interno) */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.25);
+
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.12s ease;
+
+  &:hover {
+    background: linear-gradient(135deg, #2196f3 0%, #12b28c 100%);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22),
+      inset 0 0 0 2px rgba(255, 255, 255, 0.3);
+  }
+  &:active {
+    transform: scale(0.96);
+  }
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.4), inset 0 0 0 2px #fff;
+  }
+}
+
+/* =========================================================
+   CONTENIDO PRINCIPAL (columna)
+   ========================================================= */
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease; /* por si en algún momento desplazas el main */
+}
+
+/* =========================================================
+   HEADER (botón | logo | forecast)
+   - Desktop: 1 fila, 3 columnas
+   - Móvil:   2 filas (fila 1: botón+logo, fila 2: forecast a 100%)
+   ========================================================= */
+.main-layout-header {
+  padding: 0; /* sin padding → sin “franjas” */
+  border-bottom: 1px solid #ccc;
+  background: linear-gradient(
+    90deg,
+    #1e88e5 0%,
+    #0aa67f 20%,
+    #2bb673 60%,
+    #66cc88 100%
+  );
+
+  /* Desktop: [menu] [logo] [forecast(1fr)] */
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  grid-template-areas: "menu logo forecast";
+  align-items: center;
+  gap: 0; /* sin hueco visible entre columnas */
+}
+
+/* Mapea explícitamente cada área del header */
+.main-layout-header .menu-toggle-fab {
+  grid-area: menu;
+  justify-self: start;
+}
+.main-layout-header .inamhi-logo {
+  grid-area: logo;
+  justify-self: start;
+}
+.main-layout-header > app-forecast-panel.header-forecast,
+.main-layout-header > .header-forecast {
+  grid-area: forecast;
+  display: block;
+  width: 100%;
+  min-width: 0; /* evita overflow del grid */
+}
+
+/* Slot del logo (entre botón y banner) */
+.inamhi-logo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px; /* altura visual alineada con el banner */
+  padding: 0 8px; /* separación sin generar “franjas” */
+  text-decoration: none;
+
+  img {
+    display: block;
+    height: 55px; /* ajusta según tu asset */
+    width: auto;
+    object-fit: contain;
+  }
+}
+
+/* =========================================================
+   BARRA DE MENSAJES Y MAPA
+   ========================================================= */
+.main-layout-messages {
+  background-color: #fffde7;
+  border-bottom: 1px solid #ccc;
+  padding: 0.5rem 1rem;
+}
+
+.main-layout-maparea {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+/* =========================================================
+   FAB DE COLAPSE PARA MÓVIL (aparece solo en móvil)
+   - Lo posicionamos absoluto en el header (arriba-derecha)
+   - Así evitamos tocar el grid o requerir un área extra
+   ========================================================= */
+.forecast-collapse-fab {
+  display: none; /* oculto en desktop */
+  border: 1.5px solid #fff;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(1.5px);
+  position: absolute;
+  top: 2px;
+  right: 8px; /* se ajusta con safe-area abajo */
+  z-index: 5;
+}
+
+/* =========================================================
+   BREAKPOINTS / RESPONSIVE
+   ========================================================= */
+
+/* --------- ≤ 1024px (Tablets / iPad) --------- */
+@media (max-width: 1024px) {
+  /* Un poco más compacto en header y botón */
+  .menu-toggle-fab {
+    width: 36px;
+    height: 36px;
+  }
+  .inamhi-logo {
+    height: 56px;
+    padding: 0 6px;
+  }
+  .inamhi-logo img {
+    height: 34px;
+  }
+
+  /* Menú lateral un poco más angosto si decides no cerrarlo */
+  .side-menu {
+    width: 220px;
+  }
+  .side-menu.closed {
+    width: 0;
+  }
+}
+
+/* --------- ≤ 768px (Móvil en vertical y tablets chicas) --------- */
+@media (max-width: 768px) {
+  /* Header en 2 filas: F1 (menu+logo), F2 (forecast full) */
+  .main-layout-header {
+    grid-template-columns: auto 1fr; /* dos columnas arriba */
+    grid-template-rows: auto auto; /* dos filas */
+    grid-template-areas:
+      "menu logo"
+      "forecast forecast";
+    position: relative; /* para posicionar el FAB adentro */
+  }
+
+  .forecast-collapse-fab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    right: max(8px, env(safe-area-inset-right)); /* respeta notch */
+  }
+
+  /* Botón/Logo compactos (opcional si no lo tenías ya) */
+  .menu-toggle-fab {
+    width: 36px;
+    height: 36px;
+    margin-left: 8px;
+  }
+  .inamhi-logo {
+    height: 48px;
+    padding: 0 6px;
+  }
+  .inamhi-logo img {
+    height: 28px;
+  }
+
+  /* MENÚ LATERAL: en móvil overlay (no empuja el contenido) */
+  .side-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 260px; /* ancho fijo de overlay */
+    transform: translateX(
+      0
+    ); /* visible por defecto; tu lógica de clase lo controla */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    box-shadow: 6px 0 18px rgba(0, 0, 0, 0.18);
+    z-index: 1000; /* por encima del mapa/header */
+  }
+  .side-menu.closed {
+    /* En móvil, “cerrado” desliza hacia la izquierda (mejor UX que width:0) */
+    width: 260px; /* conserva el ancho para que la transición sea suave */
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+    padding: 0; /* sin padding visible mientras está oculto */
+  }
+
+  /* El contenido principal se mantiene a ancho completo (no desplazado) */
+  .main-content {
+    width: 100%;
+  }
+
+  /* Mensajes más compactos en móvil */
+  .main-layout-messages {
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+/* --------- ≤ 480px (Móvil angosto) --------- */
+@media (max-width: 480px) {
+  /* Botón y logo aún más compactos */
+  .inamhi-logo {
+    height: 44px;
+    padding: 0 4px;
+  }
+  .inamhi-logo img {
+    height: 24px;
+  }
+
+  /* Menú overlay más chico en pantallas muy angostas */
+  .side-menu {
+    width: 235px;
+  }
+  .side-menu.closed {
+    width: 235px;
+    transform: translateX(-100%);
+  }
+
+  /* Mensajes: reduce padding para ganar alto útil */
+  .main-layout-messages {
+    padding: 0.4rem 0.6rem;
+  }
+}
+
+/* --------- iOS/Android Notches: respeta safe-areas --------- */
+@supports (padding: max(0px)) {
+  .main-layout-header {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
+
+/* =========================================================
+   *** ANIMACIÓN CSS-ONLY: MOSTRAR/OCULTAR EL FORECAST EN MÓVIL ***
+   - Controlado desde el HEADER agregando la clase:
+       .main-layout-header.is-forecast-collapsed
+   - No requiere @Input en el componente hijo
+   - En desktop siempre está expandido
+   ========================================================= */
+@media (max-width: 768px) {
+  /* Estado normal (abierto): definimos límites y transición */
+  .header-forecast {
+    display: block;
+    overflow: hidden; /* oculta contenido durante colapso */
+    max-height: 520px; /* alto “suficiente” para el banner en móvil */
+    opacity: 1;
+    transition: max-height 220ms ease, opacity 220ms ease, margin 220ms ease,
+      padding 220ms ease;
+  }
+
+  /* Estado colapsado: al header se le añade la clase */
+  .main-layout-header.is-forecast-collapsed .header-forecast {
+    max-height: 0;
+    opacity: 0;
+    pointer-events: none; /* evita taps sobre el contenido oculto */
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+/* =========================================================
+   DEGRADADOS MEJORADOS PARA MÓVIL (≤ 768px)
+   - Transición más larga y con stops intermedios
+   - Capa suave para evitar banding en pantallas OLED/LCD
+   ========================================================= */
+@media (max-width: 768px) {
+  /* Header (franja superior que contiene el forecast) */
+  .main-layout-header {
+    /* Azul → cian → teal → verde medio → verde claro */
+    background: linear-gradient(
+      105deg,
+      #1e88e5 0%,
+      #27b0ee 20%,
+      #11b19b 38%,
+      #0aa67f 58%,
+      #2bb673 80%,
+      #66cc88 100%
+    );
+    position: relative;
+    isolation: isolate; /* aísla blending de la pseudo-capa */
+  }
+  .main-layout-header::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    /* highlight radial a la izquierda + velo vertical muy suave */
+    background: radial-gradient(
+        120% 120% at 0% 50%,
+        rgba(255, 255, 255, 0.1),
+        transparent 60%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0) 40%
+      );
+    mix-blend-mode: soft-light;
+  }
+
+  /* Si tu banner (forecast panel) también tiene fondo propio,
+     aplica el mismo tratamiento para que combine perfecto. */
+  .main-layout-header > app-forecast-panel .banner,
+  .main-layout-header > .header-forecast .banner {
+    background: linear-gradient(
+      105deg,
+      #1e88e5 0%,
+      #27b0ee 20%,
+      #11b19b 38%,
+      #0aa67f 58%,
+      #2bb673 80%,
+      #66cc88 100%
+    );
+    position: relative;
+    isolation: isolate;
+  }
+  .main-layout-header > app-forecast-panel .banner::before,
+  .main-layout-header > .header-forecast .banner::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        120% 120% at 0% 50%,
+        rgba(255, 255, 255, 0.1),
+        transparent 60%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.05),
+        rgba(255, 255, 255, 0) 40%
+      );
+    mix-blend-mode: soft-light;
+  }
+
+  /* Menú lateral en móvil (overlay): gradiente a juego y más profundo al inicio */
+  .side-menu {
+    background: linear-gradient(
+      165deg,
+      #174ea6 0%,
+      #1e88e5 36%,
+      #11b19b 68%,
+      #2bb673 100%
+    );
+  }
+}
+
+/* =========================================================
+   EXTRA: muy angosto (≤ 480px)
+   - Ajuste fino de stops para pantallas pequeñas
+   ========================================================= */
+@media (max-width: 480px) {
+  .main-layout-header,
+  .main-layout-header > app-forecast-panel .banner,
+  .main-layout-header > .header-forecast .banner {
+    background: linear-gradient(
+      110deg,
+      #1e88e5 0%,
+      #30b9f0 22%,
+      #10b49f 42%,
+      #0aa67f 60%,
+      #2bb673 82%,
+      #66cc88 100%
+    );
+  }
+}

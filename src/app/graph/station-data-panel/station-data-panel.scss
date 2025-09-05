@@ -1,0 +1,76 @@
+/* Contenedor general del panel centrado en pantalla */
+.station-panel__container {
+  position: fixed;
+  top: 52%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90vw;
+  height: 90vh;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+}
+
+/* Tarjeta principal del panel */
+.station-panel__card {
+  width: 100%;
+  height: 100%;
+  background-color: #fafafa; /* fondo más claro */
+  border: 1px solid #ccc;
+  overflow-y: auto;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+/* Título superior (Header) con color azul INAMHI */
+.station-panel__card mat-card-title {
+  background-color: #002b52;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  padding: 0.5rem;
+  margin: 0;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom: 1px solid #000;
+}
+
+/* Botón de cerrar (X) */
+.station-panel__close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #ff1f1f;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #ff0000;
+    transform: scale(1.05);
+  }
+}
+
+/* Menú de pestañas o botones de navegación */
+.station-panel__menu {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  background-color: #f2f2f2;
+  border-bottom: 1px solid #ccc;
+}

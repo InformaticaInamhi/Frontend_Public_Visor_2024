@@ -1,0 +1,32 @@
+<div class="station-panel__container">
+  <mat-card class="station-panel__card">
+    <!-- Botón de cerrar -->
+    <button mat-icon-button class="station-panel__close-btn" (click)="cerrar()">
+      X
+    </button>
+
+    @if (stationInformation) {
+    <mat-card-title>
+      {{ stationInformation.punto_obs }} ({{ stationInformation.codigo }})
+    </mat-card-title>
+
+    <!-- Menú de pestañas -->
+    <mat-tab-group [(selectedIndex)]="selectedTabIndex">
+      <mat-tab label="Datos Meteorológicos">
+        @if (selectedTabIndex === 0) {
+        <app-station-chart
+          [stationInformation]="stationInformation"
+          [parametros]="parametros"
+        />
+        }
+      </mat-tab>
+
+      <!-- <mat-tab label="Pronóstico del Tiempo">
+        @if (selectedTabIndex === 1) {
+        <app-station-forecast-panel />
+        }
+      </mat-tab> -->
+    </mat-tab-group>
+    }
+  </mat-card>
+</div>

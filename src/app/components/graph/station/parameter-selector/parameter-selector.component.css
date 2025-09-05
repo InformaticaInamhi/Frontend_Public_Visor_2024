@@ -1,9 +1,0 @@
-.parameter-selector-container {
-  width: 100%;
-  min-width: 600px;
-}
-
-.parameter-selector-container mat-form-field {
-  width: 100%;
-  max-width: 600px;
-}

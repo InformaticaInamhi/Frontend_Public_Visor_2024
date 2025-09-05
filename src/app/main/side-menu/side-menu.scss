@@ -1,0 +1,21 @@
+.side-menu-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1rem;
+  color: white;
+}
+
+.toggle-button {
+  align-self: flex-end;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.side-menu-content {
+  font-size: 14px;
+
+  p {
+    margin: 0.5rem 0;
+  }
+}

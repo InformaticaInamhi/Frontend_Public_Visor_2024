@@ -1,0 +1,29 @@
+<section class="main-layout-maparea">
+  <!-- Botón fijo de configuración arriba derecha -->
+  <div class="top-right-settings">
+    <button (click)="togglePanel('filter')">
+      <mat-icon>settings</mat-icon>
+    </button>
+  </div>
+
+  <!-- Botón flotante de búsqueda parte inferior derecha -->
+
+  <!-- Panel de filtros -->
+  @if (showFilterPanel() && observations.length > 0) {
+  <app-point-filter
+    class="floating-panel top-right-panel"
+    [observations]="observations"
+    [(selectedCaptorTypes)]="selectedCaptorTypes"
+    (selectedCaptorTypesChange)="onCaptorFilterChange($event)"
+  />
+  }
+
+  <!-- Panel de búsqueda -->
+  <app-floating-search
+    [observations]="filteredObservations"
+    (selected)="onStationSelected($event)"
+  />
+
+  <!-- Mapa -->
+  <app-mapa-main [observations]="filteredObservations" />
+</section>
