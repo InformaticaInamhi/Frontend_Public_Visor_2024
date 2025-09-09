@@ -1,15 +1,21 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+
 import { ParametroEstacion } from '../../data-core/models/observation-point';
 import { PointObservationModel } from '../../data-core/models/point-observation.model';
 import { DataCore } from '../../data-core/services/data-core';
 import { SpinnerService } from '../../main/services/spinner-service/spinner-service';
+import { CsvExportService } from '../services/csv-export-service';
 import { PlotlyMultipleGraph } from '../services/plotly-multiple-graph';
+import { DateRangeDialogComponent } from './data-range/date-range-dialog.component';
 
 @Component({
   standalone: true,
@@ -17,10 +23,14 @@ import { PlotlyMultipleGraph } from '../services/plotly-multiple-graph';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     MatSelectModule,
     MatFormFieldModule,
     MatIconModule,
     MatButtonModule,
+    MatDialogModule,
+    MatDatepickerModule,
+    MatInputModule,
   ],
   templateUrl: './station-chart.html',
   styleUrl: './station-chart.scss',
@@ -56,11 +66,18 @@ export class StationChart {
   combinedSeries: any[] = [];
   sliderValue: number = 100;
   private combinedSeriesOriginal: any[] = [];
+  hasData = false;
+  dateRange: { start: Date | null; end: Date | null } = {
+    start: null,
+    end: null,
+  };
 
   constructor(
     private dataService: DataCore,
     private spinnerService: SpinnerService,
-    private plotlyMultipleService: PlotlyMultipleGraph
+    private plotlyMultipleService: PlotlyMultipleGraph,
+    private csvExportService: CsvExportService,
+    private dialog: MatDialog
   ) {}
 
   onParamsChange(): void {
@@ -83,47 +100,6 @@ export class StationChart {
         this.activeSeriesByNemonico[def.nemonico] = true;
       }
     }
-  }
-
-  graficarCombinada(): void {
-    if (!this.selectedParams.length || !this.stationInformation?.id_estacion)
-      return;
-
-    const nemonicos = this.selectedParams
-      .flatMap((param) => param.params?.map((p) => p.nemonico) || [])
-      .filter((nem) => this.activeSeriesByNemonico[nem]);
-
-    if (!nemonicos.length) {
-      console.warn('No hay nemónicos activos para enviar.');
-      return;
-    }
-
-    this.spinnerService.show();
-
-    this.dataService
-      .postDataHour(this.stationInformation.id_estacion, nemonicos)
-      .then((res) => {
-        this.combinedSeries = res;
-        this.combinedSeriesOriginal = structuredClone(res);
-        this.sliderValue = 100;
-
-        this.plotlyMultipleService.renderCombinedChart(
-          this.chartContainer.nativeElement,
-          this.stationInformation,
-          this.selectedParams,
-          this.combinedSeries,
-          this.selectedTraceTypesPerParam
-        );
-        this.GridVisible = true;
-      })
-      .catch((err) => {
-        console.error('❌ Error al obtener datos combinados:', err);
-        this.GridVisible = false;
-      })
-      .finally(() => {
-        this.spinnerService.hide();
-        this.showPanel = true;
-      });
   }
 
   onTraceTypePerParamChange(): void {
@@ -216,5 +192,88 @@ export class StationChart {
 
     this.combinedSeries = seriesFiltradas;
     this.redibujarDesdeCombined();
+  }
+
+  graficarCombinada(): void {
+    // limpiar datos antes de nueva gráfica
+    this.combinedSeries = [];
+    this.hasData = false;
+
+    if (!this.selectedParams.length || !this.stationInformation?.id_estacion)
+      return;
+
+    const nemonicos = this.selectedParams
+      .flatMap((param) => param.params?.map((p) => p.nemonico) || [])
+      .filter((nem) => this.activeSeriesByNemonico[nem]);
+
+    if (!nemonicos.length) {
+      console.warn('No hay nemónicos activos para enviar.');
+      return;
+    }
+
+    this.spinnerService.show();
+
+    const fechaInicio = this.dateRange.start
+      ? new Date(this.dateRange.start).toISOString()
+      : undefined;
+
+    const fechaFin = this.dateRange.end
+      ? new Date(this.dateRange.end).toISOString()
+      : undefined;
+
+    this.dataService
+      .postDataHour(
+        this.stationInformation.id_estacion,
+        nemonicos,
+        fechaInicio,
+        fechaFin
+      )
+      .then((res) => {
+        this.combinedSeries = res;
+        this.hasData = this.combinedSeries.length > 0; 
+
+        this.combinedSeriesOriginal = structuredClone(res);
+        this.sliderValue = 100;
+
+        this.plotlyMultipleService.renderCombinedChart(
+          this.chartContainer.nativeElement,
+          this.stationInformation,
+          this.selectedParams,
+          this.combinedSeries,
+          this.selectedTraceTypesPerParam
+        );
+        this.GridVisible = true;
+      })
+      .catch((err) => {
+        console.error('❌ Error al obtener datos combinados:', err);
+        this.GridVisible = false;
+      })
+      .finally(() => {
+        this.spinnerService.hide();
+        this.showPanel = true;
+      });
+  }
+
+  downloadCSV(): void {
+    this.csvExportService.exportCSV(
+      this.combinedSeries,
+      this.selectedParams,
+      this.stationInformation.id_estacion
+    );
+  }
+
+  openDateDialog(): void {
+    const dialogRef = this.dialog.open(DateRangeDialogComponent, {
+      width: '400px',
+      data: { start: this.dateRange.start, end: this.dateRange.end },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.dateRange = result;
+        console.log('📅 Inicio:', this.dateRange.start);
+        console.log('📅 Fin:', this.dateRange.end);
+      }
+    });
   }
 }

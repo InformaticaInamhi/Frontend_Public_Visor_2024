@@ -1,12 +1,8 @@
 <div class="station-chart__container">
   <!-- Configuración de parámetros -->
   <div class="station-chart__config-box">
-    <div class="station-chart__config-header">
-      <div class="station-chart__config-title">Seleccionar parámetros</div>
-    </div>
-
-    <div class="station-chart__config-row">
-      <!-- Selector múltiple de parámetros -->
+    <!-- Columna 1: Select -->
+    <div class="station-chart__col select">
       <mat-form-field appearance="outline" class="station-chart__param-select">
         <mat-label>Parámetros</mat-label>
         <mat-select
@@ -22,12 +18,41 @@
           }
         </mat-select>
       </mat-form-field>
+    </div>
 
-      <!-- Botones -->
+    <!-- Columna 2: Calendario -->
+    <div class="station-chart__col calendar">
+      <button
+        mat-icon-button
+        color="primary"
+        class="station-chart__calendar-btn"
+        (click)="openDateDialog()"
+        matTooltip="Seleccionar rango de fechas"
+        [ngClass]="{ active: dateRange.start && dateRange.end }"
+      >
+        <mat-icon>calendar_today</mat-icon>
+      </button>
+      @if(dateRange.start && dateRange.end){
+      <div class="station-chart__date-label">
+        {{ dateRange.start | date: 'dd/MM/yyyy' }} – {{ dateRange.end | date:
+        'dd/MM/yyyy' }}
+      </div>
+      }
+    </div>
+
+    <!-- Columna 3: Botones -->
+    <div class="station-chart__col actions">
       <button mat-raised-button color="primary" (click)="graficarCombinada()">
         Graficar
       </button>
-      <button mat-raised-button color="accent">Descargar CSV</button>
+      <button
+        mat-raised-button
+        color="accent"
+        (click)="downloadCSV()"
+        [disabled]="!hasData"
+      >
+        Descargar CSV
+      </button>
     </div>
   </div>
 
@@ -113,7 +138,6 @@
           min="1"
           max="100"
           [(ngModel)]="sliderValue"
-          (input)="onSliderChange()"
           class="station-chart__slider"
           orient="vertical"
         />

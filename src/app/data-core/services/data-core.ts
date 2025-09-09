@@ -15,8 +15,8 @@ export class DataCore {
    * Envía solicitud POST para obtener series horarias de una estación.
    * @param id_estacion ID único de la estación
    * @param table_names Lista de nemónicos (nombres de tabla)
-   * @param fecha_desde Fecha inicial (opcional, aún no usada)
-   * @param fecha_hasta Fecha final (opcional, aún no usada)
+   * @param fecha_desde Fecha inicial en ISO (opcional)
+   * @param fecha_hasta Fecha final en ISO (opcional)
    */
   async postDataHour(
     id_estacion: number,
@@ -27,8 +27,15 @@ export class DataCore {
     const body: any = {
       id_estacion,
       table_names,
-      // fecha_desde y fecha_hasta definidos pero no se envían por ahora
     };
+
+    // ✅ incluir solo si están definidos
+    if (fecha_desde) {
+      body.fecha_desde = fecha_desde;
+    }
+    if (fecha_hasta) {
+      body.fecha_hasta = fecha_hasta;
+    }
 
     const url = `${this.baseUrl}/station_data_hour/get_data_hour/`;
     return firstValueFrom(this.http.post<any>(url, body));
