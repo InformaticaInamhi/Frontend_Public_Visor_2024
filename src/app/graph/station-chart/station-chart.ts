@@ -16,6 +16,7 @@ import { SpinnerService } from '../../main/services/spinner-service/spinner-serv
 import { CsvExportService } from '../services/csv-export-service';
 import { PlotlyMultipleGraph } from '../services/plotly-multiple-graph';
 import { DateRangeDialogComponent } from './data-range/date-range-dialog.component';
+import { PlotlyConvencionalesGraph } from '../services/convencionales/plotly-convencionales-graph';
 
 @Component({
   standalone: true,
@@ -77,7 +78,8 @@ export class StationChart {
     private spinnerService: SpinnerService,
     private plotlyMultipleService: PlotlyMultipleGraph,
     private csvExportService: CsvExportService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private plotlyConvencionalesService: PlotlyConvencionalesGraph
   ) {}
 
   onParamsChange(): void {
@@ -107,20 +109,33 @@ export class StationChart {
       !this.combinedSeries.length ||
       !this.chartContainer ||
       !this.stationInformation
-    )
+    ) {
       return;
+    }
 
     const seriesActivas = this.combinedSeries.filter(
       (s) => this.activeSeriesByNemonico[s.nemonico]
     );
 
-    this.plotlyMultipleService.renderCombinedChart(
-      this.chartContainer.nativeElement,
-      this.stationInformation,
-      this.selectedParams,
-      seriesActivas,
-      this.selectedTraceTypesPerParam
-    );
+    if (this.stationInformation.id_captor === 1) {
+      // Convencionales
+      this.plotlyConvencionalesService.renderCombinedChart(
+        this.chartContainer.nativeElement,
+        this.stationInformation,
+        this.selectedParams,
+        seriesActivas,
+        this.selectedTraceTypesPerParam
+      );
+    } else {
+      // Automáticas
+      this.plotlyMultipleService.renderCombinedChart(
+        this.chartContainer.nativeElement,
+        this.stationInformation,
+        this.selectedParams,
+        seriesActivas,
+        this.selectedTraceTypesPerParam
+      );
+    }
   }
 
   isSeriesActive(nemonico: string): boolean {
@@ -151,13 +166,25 @@ export class StationChart {
       (s) => this.activeSeriesByNemonico[s.nemonico]
     );
 
-    this.plotlyMultipleService.renderCombinedChart(
-      this.chartContainer.nativeElement,
-      this.stationInformation,
-      this.selectedParams,
-      seriesActivas,
-      this.selectedTraceTypesPerParam
-    );
+    if (this.stationInformation.id_captor === 1) {
+      // Convencionales
+      this.plotlyConvencionalesService.renderCombinedChart(
+        this.chartContainer.nativeElement,
+        this.stationInformation,
+        this.selectedParams,
+        seriesActivas,
+        this.selectedTraceTypesPerParam
+      );
+    } else {
+      // Automáticas
+      this.plotlyMultipleService.renderCombinedChart(
+        this.chartContainer.nativeElement,
+        this.stationInformation,
+        this.selectedParams,
+        seriesActivas,
+        this.selectedTraceTypesPerParam
+      );
+    }
   }
 
   toggleGridVisible(): void {
@@ -193,14 +220,16 @@ export class StationChart {
     this.combinedSeries = seriesFiltradas;
     this.redibujarDesdeCombined();
   }
-
+  //
+  //
   graficarCombinada(): void {
     // limpiar datos antes de nueva gráfica
     this.combinedSeries = [];
     this.hasData = false;
 
-    if (!this.selectedParams.length || !this.stationInformation?.id_estacion)
+    if (!this.selectedParams.length || !this.stationInformation?.id_estacion) {
       return;
+    }
 
     const nemonicos = this.selectedParams
       .flatMap((param) => param.params?.map((p) => p.nemonico) || [])
@@ -221,27 +250,33 @@ export class StationChart {
       ? new Date(this.dateRange.end).toISOString()
       : undefined;
 
-    this.dataService
-      .postDataHour(
-        this.stationInformation.id_estacion,
-        nemonicos,
-        fechaInicio,
-        fechaFin
-      )
+    const apiCall =
+      this.stationInformation.id_captor === 1
+        ? this.dataService.postDataHourConvencional(
+            this.stationInformation.id_estacion,
+            nemonicos,
+            fechaInicio,
+            fechaFin
+          )
+        : this.dataService.postDataHourAutomatica(
+            this.stationInformation.id_estacion,
+            nemonicos,
+            fechaInicio,
+            fechaFin
+          );
+
+    apiCall
       .then((res) => {
         this.combinedSeries = res;
-        this.hasData = this.combinedSeries.length > 0; 
+        this.hasData = this.combinedSeries.length > 0;
 
+        // guardamos copia original para el slider
         this.combinedSeriesOriginal = structuredClone(res);
         this.sliderValue = 100;
 
-        this.plotlyMultipleService.renderCombinedChart(
-          this.chartContainer.nativeElement,
-          this.stationInformation,
-          this.selectedParams,
-          this.combinedSeries,
-          this.selectedTraceTypesPerParam
-        );
+        // redibujar según tipo de estación (convencional o automática)
+        this.redibujarDesdeCombined();
+
         this.GridVisible = true;
       })
       .catch((err) => {
@@ -254,6 +289,7 @@ export class StationChart {
       });
   }
 
+  //
   downloadCSV(): void {
     this.csvExportService.exportCSV(
       this.combinedSeries,
@@ -271,8 +307,6 @@ export class StationChart {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.dateRange = result;
-        console.log('📅 Inicio:', this.dateRange.start);
-        console.log('📅 Fin:', this.dateRange.end);
       }
     });
   }
