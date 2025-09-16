@@ -1,10 +1,12 @@
-<div class="floating-search" cdkDrag>
-  <!-- Botón flotante -->
-  <button class="search-button" (click)="togglePanel()" cdkDragHandle>
-    <span class="info-icon">i</span>
-  </button>
+<div class="floating-legend" cdkDrag>
+  <!-- Botón de info (drag handle) -->
+  <div class="legend-drag-handle" cdkDragHandle>
+    <button class="legend-button" (click)="togglePanel()">
+      <span class="info-icon">{{ panelOpen ? '×' : 'i' }}</span>
+    </button>
+  </div>
 
-  <!-- Panel tipo leyenda -->
+  <!-- Panel visible solo si panelOpen -->
   @if (panelOpen) {
     <div class="legend-panel">
       <div class="legend-title">Información estaciones</div>

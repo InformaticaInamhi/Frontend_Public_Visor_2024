@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-
+import { CdkDrag } from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-legend',
-  imports: [],
+  imports: [CdkDrag],
   templateUrl: './legend.html',
   styleUrl: './legend.scss',
 })
