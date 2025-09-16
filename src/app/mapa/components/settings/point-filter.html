@@ -1,18 +1,43 @@
 <div class="config-panel">
-  <h3>Tipo de medición</h3>
-
-  @if (captorOptions().length > 0) {
-    @for (option of captorOptions(); track option.type) {
-      <label>
+  <fieldset>
+    <legend>Tipo de medición</legend>
+    @for (option of captorOptions(); track option.id) {
+      <label class="filter-option">
         <input
           type="checkbox"
-          [checked]="isChecked(option.type)"
-          (change)="onCheckboxChange($event, option.type)"
+          [checked]="isChecked(filters.captors, option.id)"
+          (change)="onCheckboxChange($event, option.id, 'captors')"
         />
-        {{ option.label }}
+        {{ option.label | titlecase }}
       </label>
     }
-  } @else {
-    <p>No hay tipos disponibles.</p>
-  }
+  </fieldset>
+
+  <fieldset>
+    <legend>Estado transmisión</legend>
+    @for (option of stateOptions(); track option.id) {
+      <label class="filter-option">
+        <input
+          type="checkbox"
+          [checked]="isChecked(filters.states, option.id)"
+          (change)="onCheckboxChange($event, option.id, 'states')"
+        />
+        {{ option.label | titlecase }}
+      </label>
+    }
+  </fieldset>
+
+  <fieldset>
+    <legend>Categoría</legend>
+    @for (option of categoryOptions(); track option.id) {
+      <label class="filter-option">
+        <input
+          type="checkbox"
+          [checked]="isChecked(filters.categories, option.id)"
+          (change)="onCheckboxChange($event, option.id, 'categories')"
+        />
+        {{ option.label | titlecase }}
+      </label>
+    }
+  </fieldset>
 </div>

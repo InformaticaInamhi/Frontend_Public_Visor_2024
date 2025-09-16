@@ -5,79 +5,90 @@ import {
   Input,
   Output,
   computed,
-  signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
 import { PointObservationModel } from '../../../data-core/models/point-observation.model';
+
+export interface PointFilters {
+  captors: number[];
+  states: number[];
+  categories: number[];
+}
 
 @Component({
   selector: 'app-point-filter',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './point-filter.html',
   styleUrl: './point-filter.scss',
 })
 export class PointFilterComponent {
   @Input() observations: PointObservationModel[] = [];
+  @Input() filters: PointFilters = { captors: [], states: [], categories: [] };
+  @Output() filtersChange = new EventEmitter<PointFilters>();
 
-  @Input() selectedCaptorTypes: number[] = [];
-  @Output() selectedCaptorTypesChange = new EventEmitter<number[]>();
-
-  private show = signal(false);
-  showPanel = this.show;
-
-  /**
-   * Genera opciones únicas de tipo de captor encontradas en las observaciones.
-   * Devuelve en orden: Automática (2), Convencional (1), Desconocido (0)
-   */
+  /** Opciones de tipo de captor */
   captorOptions = computed(() => {
-    const types = new Set<number>();
-
-    for (const obs of this.observations) {
+    const set = new Set<number>();
+    this.observations.forEach((obs) => {
       const tipo = [1, 2].includes(obs.id_captor) ? obs.id_captor : 0;
-      types.add(tipo);
-    }
+      set.add(tipo);
+    });
 
     return [2, 1, 0]
-      .filter((t) => types.has(t))
-      .map((type) => {
-        let label = 'Desconocido';
-        if (type === 1) label = 'Convencional';
-        else if (type === 2) label = 'Automática';
-        return { type, label };
-      });
+      .filter((t) => set.has(t))
+      .map((id) => ({
+        id,
+        label:
+          id === 1 ? 'Convencional' : id === 2 ? 'Automática' : 'Desconocido',
+      }));
   });
 
-  /**
-   * Cambia el estado del filtro cuando el checkbox es marcado/desmarcado
-   */
-  toggle(type: number, checked: boolean) {
-    const newSelection = [...this.selectedCaptorTypes];
-    const index = newSelection.indexOf(type);
+  /** Opciones de estado de transmisión */
+  stateOptions = computed(() => {
+    const map = new Map<number, string>();
+    this.observations.forEach((obs) =>
+      map.set(obs.id_estado_transmision, obs.estado_transmision)
+    );
+    return Array.from(map.entries()).map(([id, label]) => ({ id, label }));
+  });
 
-    if (checked && index === -1) {
-      newSelection.push(type);
-    } else if (!checked && index !== -1) {
-      newSelection.splice(index, 1);
+  /** Opciones de categoría */
+  categoryOptions = computed(() => {
+    const map = new Map<number, string>();
+    this.observations.forEach((obs) =>
+      map.set(obs.id_categoria, obs.categoria)
+    );
+    return Array.from(map.entries()).map(([id, label]) => ({ id, label }));
+  });
+
+  /** Verifica si está seleccionado */
+  isChecked(list: number[] | undefined, id: number): boolean {
+    return !!list && list.includes(id);
+  }
+
+  /** Maneja cambio en checkbox */
+  onCheckboxChange(event: Event, id: number, type: keyof PointFilters) {
+    const checked = (event.target as HTMLInputElement)?.checked ?? false;
+    const next = { ...this.filters };
+
+    const selection = new Set(next[type] || []);
+
+    if (checked) {
+      selection.add(id);
+    } else {
+      // Solo permitimos quitar si no es el último
+      if (selection.size > 1) {
+        selection.delete(id);
+      } else {
+        // Revertir el checkbox si es el último
+        (event.target as HTMLInputElement).checked = true;
+        return;
+      }
     }
 
-    this.selectedCaptorTypesChange.emit(newSelection);
-  }
-
-  /**
-   * Verifica si el tipo está actualmente seleccionado
-   */
-  isChecked(type: number): boolean {
-    return this.selectedCaptorTypes.includes(type);
-  }
-
-  onCheckboxChange(event: Event, type: number) {
-    const checked = (event.target as HTMLInputElement).checked;
-    this.toggle(type, checked);
-  }
-
-  togglePanel() {
-    this.show.update((v) => !v);
+    next[type] = Array.from(selection);
+    this.filters = next;
+    this.filtersChange.emit(next);
   }
 }

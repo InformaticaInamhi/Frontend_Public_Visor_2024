@@ -13,9 +13,10 @@
   <app-point-filter
     class="floating-panel top-right-panel"
     [observations]="observations"
-    [(selectedCaptorTypes)]="selectedCaptorTypes"
-    (selectedCaptorTypesChange)="onCaptorFilterChange($event)"
-  />
+    [(filters)]="filters"
+    (filtersChange)="onFiltersChange($event)"
+  >
+  </app-point-filter>
   }
 
   <!-- Panel de búsqueda -->

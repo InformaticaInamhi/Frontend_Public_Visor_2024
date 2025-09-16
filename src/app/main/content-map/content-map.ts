@@ -16,12 +16,15 @@ import { PointObservationModel } from '../../data-core/models/point-observation.
 import { PointObservationService } from '../../data-core/services/point-observation';
 import { FloatingSearchComponent } from '../../mapa/components/floating-search/floating-search';
 import { MapaMain } from '../../mapa/components/mapa-main/mapa-main';
-import { PointFilterComponent } from '../../mapa/components/settings/point-filter';
+import {
+  PointFilterComponent,
+  PointFilters,
+} from '../../mapa/components/settings/point-filter';
 import { MarkerLayerService } from '../../mapa/services/marker-layer';
 import { OpenLayersMapService } from '../../mapa/services/openlayers-map';
 import { DEFAULT_OBSERVATION_FILTER } from '../../settings/observation-config';
 import { SpinnerService } from '../services/spinner-service/spinner-service';
-import { Legend } from "../legend/legend";
+import { Legend } from '../legend/legend';
 @Component({
   selector: 'app-content-map',
   standalone: true,
@@ -31,8 +34,8 @@ import { Legend } from "../legend/legend";
     FloatingSearchComponent,
     PointFilterComponent,
     MatIconModule,
-    Legend
-],
+    Legend,
+  ],
   templateUrl: './content-map.html',
   styleUrl: './content-map.scss',
 })
@@ -55,6 +58,12 @@ export class ContentMap implements OnInit {
     info: PointObservationModel;
     parametros: ParametroEstacion[];
   }>();
+
+  filters: PointFilters = {
+    captors: [2], // Automática
+    states: [1], // Transmitiendo
+    categories: [1, 2, 3], // Meteo, Hidro, Hidro-Meteo
+  };
 
   constructor(
     private pointObsService: PointObservationService,
@@ -91,9 +100,7 @@ export class ContentMap implements OnInit {
     const params = {
       id_aplicacion: environment.id_aplicacion_horario,
     };
-
     this.spinnerService.show();
-
     this.pointObsService.getPointObservations(params).subscribe({
       next: (data) => {
         this.observations = data;
@@ -115,16 +122,23 @@ export class ContentMap implements OnInit {
     }
   }
 
-  onCaptorFilterChange(newList: number[]): void {
-    this.selectedCaptorTypes = newList;
+  onFiltersChange(newFilters: PointFilters) {
+    this.filters = newFilters;
     this.updateMarkers();
   }
-
-  get filteredObservations(): PointObservationModel[] {
-    return this.observations.filter((obs) => {
-      const tipo = [1, 2].includes(obs.id_captor) ? obs.id_captor : 0;
-      return this.selectedCaptorTypes.includes(tipo);
-    });
+  get filteredObservations() {
+    return this.observations.filter(
+      (obs) =>
+        // captors
+        (this.filters.captors.length === 0 ||
+          this.filters.captors.includes(obs.id_captor)) &&
+        // states
+        (this.filters.states.length === 0 ||
+          this.filters.states.includes(obs.id_estado_transmision)) &&
+        // categories
+        (this.filters.categories.length === 0 ||
+          this.filters.categories.includes(obs.id_categoria))
+    );
   }
 
   togglePanel(panel: 'filter' | 'search'): void {

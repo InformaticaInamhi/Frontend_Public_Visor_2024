@@ -1,42 +1,35 @@
 .config-panel {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 1.25rem 1rem;
-  width: 260px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-  font-family: 'Segoe UI', Roboto, sans-serif;
-  border: 1px solid #e0e0e0;
+  background: #fff;
+  border-radius: 10px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  min-width: 220px;
+}
 
-  h3 {
-    margin: 0 0 1rem;
-    font-size: 17px;
-    font-weight: 600;
-    color: #222;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 0.5rem;
-  }
+fieldset {
+  border: none;
+  margin: 0 0 12px;
+  padding: 0;
+}
 
-  .checkbox-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+legend {
+  font-weight: bold;
+  font-size: 13px;
+  margin-bottom: 6px;
+  color: #444;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 2px;
+}
 
-    label {
-      display: flex;
-      align-items: center;
-      font-size: 15px;
-      color: #333;
-      cursor: pointer;
+.filter-option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  cursor: pointer;
+  text-transform: uppercase;
+}
 
-      input[type='checkbox'] {
-        margin-right: 0.5rem;
-        transform: scale(1.2);
-        accent-color: #1976d2; // color de la marca
-      }
-
-      &:hover {
-        color: #000;
-      }
-    }
-  }
+.filter-option input[type="checkbox"] {
+  margin-right: 8px;
+  transform: scale(1.1);
 }
