@@ -1,0 +1,36 @@
+<div class="floating-search" cdkDrag>
+  <!-- Botón flotante -->
+  <button class="search-button" (click)="togglePanel()" cdkDragHandle>
+    <span class="info-icon">i</span>
+  </button>
+
+  <!-- Panel tipo leyenda -->
+  @if (panelOpen) {
+    <div class="legend-panel">
+      <div class="legend-title">Información estaciones</div>
+
+      <!-- Tipos de estaciones -->
+      <div class="legend-types">
+        @for (est of estaciones; track est.tipo) {
+          <div class="legend-type">
+            <span class="station-code">{{ est.codigo }}</span>
+            <span>{{ est.tipo }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Estados -->
+      <div class="legend-status">
+        @for (estado of estados; track estado.nombre) {
+          <div class="legend-state">
+            <span
+              class="color-dot"
+              [style.background-color]="estado.color"
+            ></span>
+            <span>{{ estado.nombre }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

@@ -21,6 +21,7 @@ import { MarkerLayerService } from '../../mapa/services/marker-layer';
 import { OpenLayersMapService } from '../../mapa/services/openlayers-map';
 import { DEFAULT_OBSERVATION_FILTER } from '../../settings/observation-config';
 import { SpinnerService } from '../services/spinner-service/spinner-service';
+import { Legend } from "../legend/legend";
 @Component({
   selector: 'app-content-map',
   standalone: true,
@@ -30,7 +31,8 @@ import { SpinnerService } from '../services/spinner-service/spinner-service';
     FloatingSearchComponent,
     PointFilterComponent,
     MatIconModule,
-  ],
+    Legend
+],
   templateUrl: './content-map.html',
   styleUrl: './content-map.scss',
 })

@@ -50,7 +50,12 @@ export class OpenLayersMapService {
       target: container,
       layers: [
         new TileLayer({
-          source: new OSM(),
+          source: new OSM({
+            attributions: [
+              'Datos © <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+              'Visor INAMHI',
+            ],
+          }),
         }),
       ],
       view: new View({

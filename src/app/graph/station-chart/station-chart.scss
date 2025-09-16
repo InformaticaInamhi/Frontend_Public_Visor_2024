@@ -213,6 +213,67 @@
   overflow: hidden;
 }
 
+// /* Panel lateral del slider */
+// .station-chart__slider-container {
+//   width: 5%;
+//   display: flex;
+//   flex-direction: row;
+//   align-items: center;
+//   justify-content: center;
+//   padding: 20px 10px;
+//   background-color: #f4f7fb;
+//   border-right: 1px solid #371313;
+// }
+
+// /* Título vertical girado */
+// .station-chart__slider-title-box {
+//   height: auto;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   margin-right: 15px;
+//   flex-shrink: 0;
+// }
+
+// .station-chart__slider-title {
+//   writing-mode: vertical-rl;
+//   transform: rotate(180deg);
+//   font-weight: bold;
+//   font-size: 15px;
+//   color: #002b52;
+//   letter-spacing: 2px;
+//   text-align: center;
+// }
+
+// .station-chart__slider-title span {
+//   display: block;
+// }
+
+// .station-chart__slider {
+//   writing-mode: bt-lr;
+//   height: 400px;
+//   width: 8px;
+//   border-radius: 8px;
+//   background: linear-gradient(to top, #2563eb, #60a5fa);
+//   outline: none;
+//   cursor: pointer;
+//   box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+// }
+
+// .station-chart__slider::-webkit-slider-thumb {
+//   -webkit-appearance: none;
+//   width: 16px;
+//   height: 16px;
+//   background-color: #1d4ed8;
+//   border: 2px solid white;
+//   border-radius: 50%;
+//   cursor: pointer;
+//   transition: background 0.3s ease;
+// }
+// .station-chart__slider::-webkit-slider-thumb:hover {
+//   background-color: #3b82f6;
+// }
+
 /* Panel lateral del slider */
 .station-chart__slider-container {
   width: 5%;
@@ -249,17 +310,25 @@
   display: block;
 }
 
+/* Slider */
 .station-chart__slider {
-  writing-mode: bt-lr;
+  -webkit-appearance: none;
+  appearance: none;
   height: 400px;
   width: 8px;
-  border-radius: 8px;
-  background: linear-gradient(to top, #2563eb, #60a5fa);
-  outline: none;
+  background: transparent;
   cursor: pointer;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
 }
 
+/* Track en Chrome */
+.station-chart__slider::-webkit-slider-runnable-track {
+  width: 8px;
+  height: 100%;
+  background: linear-gradient(to top, #2563eb, #60a5fa);
+  border-radius: 8px;
+}
+
+/* Thumb en Chrome */
 .station-chart__slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 16px;
@@ -269,10 +338,34 @@
   border-radius: 50%;
   cursor: pointer;
   transition: background 0.3s ease;
+  margin-left: -4px; /* centra el thumb en el track */
 }
 .station-chart__slider::-webkit-slider-thumb:hover {
   background-color: #3b82f6;
 }
+
+/* Track en Firefox */
+.station-chart__slider::-moz-range-track {
+  width: 8px;
+  height: 100%;
+  background: linear-gradient(to top, #2563eb, #60a5fa);
+  border-radius: 8px;
+}
+
+/* Thumb en Firefox */
+.station-chart__slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background-color: #1d4ed8;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.station-chart__slider::-moz-range-thumb:hover {
+  background-color: #3b82f6;
+}
+
 
 .station-chart__plot-container {
   flex: 1;
