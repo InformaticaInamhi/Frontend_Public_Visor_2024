@@ -1,125 +1,97 @@
-/* Contenedor flotante */
-.floating-legend {
+.legend-panel.bottom-right {
   position: fixed;
-  bottom: 8rem;
-  right: 1rem;
-  z-index: 2000;
+  bottom: 20px;
+  right: 20px;
+  z-index: 999;
+
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  width: 320px; /* más ancho para 2 columnas */
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+.legend-title {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #222;
+}
+
+/* Grid en 2 columnas */
+.legend-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 14px;
+  margin-bottom: 10px;
+}
+
+.legend-item {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  align-items: center;
+  gap: 6px;
 }
 
-/* Drag handle con el botón */
-.legend-drag-handle {
-  cursor: move;
+/* Icono para tipos (sin círculo, solo inicial más marcada) */
+.legend-icon {
+  font-weight: bold;
+  font-size: 14px;
+  color: #1976d2;
+  min-width: 20px;
+  text-align: center;
 }
 
-/* Botón flotante */
+/* Colores para estados */
+.legend-color {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%; /* cuadrado redondeado */
+  display: inline-block;
+  border: 1px solid #333;
+}
+
+
+/* Contenedor del botón en la esquina superior izquierda */
+.legend-toggle.top-left {
+  position: absolute;
+  top: 60px; /* Ajusta según el espacio de los botones +/- del mapa */
+  left: 5px;
+  z-index: 1500;
+}
+
+/* Botón redondo */
 .legend-button {
   background: #1976d2;
   border: none;
-  border-radius: 50%;
-  width: 56px;
-  height: 56px;
+  border-radius: 10px;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s ease;
+  transition: background 0.25s ease, transform 0.15s ease;
 }
 
 .legend-button:hover {
   background: #125a9c;
+  transform: scale(1.05);
 }
 
 /* “i” estilizada */
 .info-icon {
   font-family: "Georgia", serif;
   font-style: italic;
-  font-size: 28px;
-  color: white;
+  font-size: 20px;
+  color: #fff;
   font-weight: bold;
   user-select: none;
-}
-
-/* Panel de leyenda */
-.legend-panel {
-  margin-top: 0.5rem;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 10px 12px;
-  width: 240px;
-  font-family: Arial, sans-serif;
-  font-size: 13px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.legend-title {
-  text-align: center;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-
-/* Tipos de estaciones */
-.legend-types {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px 12px;
-  margin-bottom: 6px;
-}
-
-.legend-type {
-  display: flex;
-  align-items: center;
-}
-
-.station-code {
-  display: inline-block;
-  width: 30px;
-  height: 30px;
-  line-height: 30px;
-  border-radius: 50%;
-  border: 1px solid #000;
-  text-align: center;
-  margin-right: 6px;
-  font-weight: bold;
-  background: white;
-}
-
-/* Estados */
-.legend-status {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: 4px;
-}
-
-.legend-state {
-  display: flex;
-  align-items: center;
-}
-
-.color-dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  display: inline-block;
-  margin-right: 6px;
-  border: 1px solid #333;
-}
-
-/* Animación suave */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  line-height: 1;
 }

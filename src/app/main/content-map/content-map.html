@@ -23,7 +23,9 @@
   <app-floating-search
     [observations]="filteredObservations"
     (selected)="onStationSelected($event)"
-  />
+    [offsetTop]="showFilterPanel() ? '28rem' : '8rem'"
+  >
+  </app-floating-search>
 
   <app-legend></app-legend>
   <!-- Mapa -->

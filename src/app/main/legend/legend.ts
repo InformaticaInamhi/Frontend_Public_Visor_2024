@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { CdkDrag } from '@angular/cdk/drag-drop';
+
 @Component({
   selector: 'app-legend',
-  imports: [CdkDrag],
+  imports: [],
   templateUrl: './legend.html',
   styleUrl: './legend.scss',
 })
 export class Legend {
-  panelOpen = false;
+  panelOpen = true;
 
   togglePanel() {
     this.panelOpen = !this.panelOpen;

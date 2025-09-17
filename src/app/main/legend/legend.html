@@ -1,38 +1,36 @@
-<div class="floating-legend" cdkDrag>
-  <!-- Botón de info (drag handle) -->
-  <div class="legend-drag-handle" cdkDragHandle>
-    <button class="legend-button" (click)="togglePanel()">
-      <span class="info-icon">{{ panelOpen ? '×' : 'i' }}</span>
-    </button>
-  </div>
-
-  <!-- Panel visible solo si panelOpen -->
-  @if (panelOpen) {
-    <div class="legend-panel">
-      <div class="legend-title">Información estaciones</div>
-
-      <!-- Tipos de estaciones -->
-      <div class="legend-types">
-        @for (est of estaciones; track est.tipo) {
-          <div class="legend-type">
-            <span class="station-code">{{ est.codigo }}</span>
-            <span>{{ est.tipo }}</span>
-          </div>
-        }
-      </div>
-
-      <!-- Estados -->
-      <div class="legend-status">
-        @for (estado of estados; track estado.nombre) {
-          <div class="legend-state">
-            <span
-              class="color-dot"
-              [style.background-color]="estado.color"
-            ></span>
-            <span>{{ estado.nombre }}</span>
-          </div>
-        }
-      </div>
-    </div>
-  }
+<!-- Botón en la esquina superior izquierda (debajo de zoom) -->
+<div class="legend-toggle top-left">
+  <button class="legend-button" (click)="togglePanel()">
+    <span class="info-icon">i</span>
+  </button>
 </div>
+
+<!-- Leyenda fija en la esquina inferior derecha -->
+@if (panelOpen) {
+  <div class="legend-panel bottom-right">
+    <div class="legend-title">Información estaciones</div>
+
+    <!-- Tipos de estaciones -->
+    <div class="legend-grid">
+      @for (est of estaciones; track est.tipo) {
+        <div class="legend-item">
+          <span class="legend-icon">{{ est.codigo }}</span>
+          <span>{{ est.tipo }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Estados -->
+    <div class="legend-grid">
+      @for (estado of estados; track estado.nombre) {
+        <div class="legend-item">
+          <span
+            class="legend-color"
+            [style.background-color]="estado.color"
+          ></span>
+          <span>{{ estado.nombre }}</span>
+        </div>
+      }
+    </div>
+  </div>
+}

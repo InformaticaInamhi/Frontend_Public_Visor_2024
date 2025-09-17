@@ -1,4 +1,4 @@
-<div class="floating-search" cdkDrag>
+<div class="floating-search" cdkDrag [ngStyle]="{ top: offsetTop }">
   <!-- Botón de lupa (drag handle) -->
   <div class="drag-handle" cdkDragHandle>
     <button class="search-button" (click)="toggleInput()">
@@ -8,21 +8,21 @@
 
   <!-- Panel visible solo si showInput -->
   @if (showInput) {
-  <div class="search-panel">
-    <input
-      type="text"
-      placeholder="Buscar código de estación..."
-      [(ngModel)]="query"
-    />
-    @if (results.length > 0) {
-    <ul>
-      @for (obs of results; track obs.codigo) {
-      <li class="result-item" (click)="select(obs)">
-        {{ obs.codigo }} - {{ obs.punto_obs }}
-      </li>
+    <div class="search-panel">
+      <input
+        type="text"
+        placeholder="Buscar código de estación..."
+        [(ngModel)]="query"
+      />
+      @if (results.length > 0) {
+        <ul>
+          @for (obs of results; track obs.codigo) {
+            <li class="result-item" (click)="select(obs)">
+              {{ obs.codigo }} - {{ obs.punto_obs }}
+            </li>
+          }
+        </ul>
       }
-    </ul>
-    }
-  </div>
+    </div>
   }
 </div>

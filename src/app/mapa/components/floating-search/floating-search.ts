@@ -10,10 +10,12 @@ import { MatIconModule } from '@angular/material/icon';
   standalone: true,
   imports: [CommonModule, FormsModule, CdkDrag, MatIconModule],
   templateUrl: './floating-search.html',
-  styleUrl: './floating-search.scss',
+  styleUrls: ['./floating-search.scss'],
 })
 export class FloatingSearchComponent {
   @Input() observations: PointObservationModel[] = [];
+  @Input() offsetTop: string = '10rem'; // ✅ posición configurable desde el padre
+
   @Output() selected = new EventEmitter<PointObservationModel>();
 
   query: string = '';
