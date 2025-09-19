@@ -1,6 +1,6 @@
 <div class="main-container">
   <!-- Menú lateral SIEMPRE visible pero animado -->
-  <!-- <aside class="side-menu" [class.closed]="!isMenuOpen">
+  <aside class="side-menu" [class.closed]="!isMenuOpen">
     <button mat-icon-button class="menu-toggle-btn" (click)="toggleMenu()">
       <mat-icon>{{ isMenuOpen ? 'chevron_left' : 'menu' }}</mat-icon>
     </button>
@@ -8,12 +8,12 @@
     @if (isMenuOpen) {
     <app-side-menu [isMenuOpen]="isMenuOpen" (toggleRequested)="toggleMenu()" />
     }
-  </aside> -->
+  </aside>
 
   <!-- Contenido principal -->
   <main class="main-content">
     <header class="main-layout-header">
-      <!-- @if (!isMenuOpen) {
+      @if (!isMenuOpen) {
       <button
         mat-icon-button
         class="menu-toggle-fab"
@@ -23,7 +23,7 @@
       >
         <mat-icon>menu</mat-icon>
       </button>
-      } -->
+      }
 
       <!-- logo INAMHI -->
       <a class="inamhi-logo" target="_blank" rel="noopener" aria-label="INAMHI">
@@ -45,7 +45,8 @@
 
       <!-- Renderiza el panel solo si NO está colapsado -->
       @if (!isForecastCollapsed) {
-      <app-forecast-panel class="header-forecast" />
+      <app-forecast-panel class="header-forecast"></app-forecast-panel>
+
       }
       <!-- <app-header-title /> -->
     </header>
